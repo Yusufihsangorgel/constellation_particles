@@ -1,0 +1,13 @@
+name: constellation_particles_example
+description: Example app for the constellation_particles package.
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  constellation_particles:
+    path: ../
