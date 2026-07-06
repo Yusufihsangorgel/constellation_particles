@@ -4,8 +4,6 @@ A mouse-reactive constellation particle field for Flutter. Particles drift,
 wrap at the edges, repel from the pointer, and link up with fading lines when
 they get close. No plugins, no shaders, no runtime dependencies beyond Flutter.
 
-![demo](doc/demo.gif)
-
 ## Why this exists
 
 Connecting-line particle fields are everywhere, and most of them are quietly
