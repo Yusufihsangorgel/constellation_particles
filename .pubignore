@@ -8,7 +8,6 @@ pubspec.lock
 .vscode/
 *.iml
 .DS_Store
-.claude/
 doc/
 example/build/
 example/.dart_tool/
