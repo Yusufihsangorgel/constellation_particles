@@ -22,15 +22,18 @@ void main() {
   });
 
   testWidgets('handles an empty field', (tester) async {
-    await tester.pumpWidget(_boxed(const ConstellationParticles(particleCount: 0)));
+    await tester
+        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 0)));
     await tester.pump(const Duration(milliseconds: 16));
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('rebuilds when the particle count changes', (tester) async {
-    await tester.pumpWidget(_boxed(const ConstellationParticles(particleCount: 40)));
+    await tester
+        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 40)));
     await tester.pump(const Duration(milliseconds: 16));
-    await tester.pumpWidget(_boxed(const ConstellationParticles(particleCount: 120)));
+    await tester
+        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 120)));
     await tester.pump(const Duration(milliseconds: 16));
     expect(tester.takeException(), isNull);
   });

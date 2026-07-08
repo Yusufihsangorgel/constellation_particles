@@ -196,7 +196,8 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
             child: RepaintBoundary(
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final size = Size(constraints.maxWidth, constraints.maxHeight);
+                  final size =
+                      Size(constraints.maxWidth, constraints.maxHeight);
                   if (size != _lastSize || _particles.isEmpty) {
                     _initParticles(size);
                   }
