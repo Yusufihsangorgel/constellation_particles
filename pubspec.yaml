@@ -1,6 +1,6 @@
 name: constellation_particles
 description: A mouse-reactive constellation particle field for Flutter with near-O(n) spatial-grid neighbour lookups and zero runtime dependencies.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/Yusufihsangorgel/constellation_particles
 issue_tracker: https://github.com/Yusufihsangorgel/constellation_particles/issues
 topics:
