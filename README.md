@@ -1,5 +1,9 @@
 # constellation_particles
 
+<p align="center">
+  <img src="doc/demo.gif" alt="constellation_particles animated particle field" width="280">
+</p>
+
 A mouse-reactive constellation particle field for Flutter. Particles drift,
 wrap at the edges, repel from the pointer, and link up with fading lines when
 they get close. No plugins, no shaders, no runtime dependencies beyond Flutter.
