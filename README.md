@@ -1,9 +1,5 @@
 # constellation_particles
 
-<p align="center">
-  <img src="doc/demo.gif" alt="constellation_particles animated particle field" width="280">
-</p>
-
 A mouse-reactive constellation particle field for Flutter. Particles drift,
 wrap at the edges, repel from the pointer, and link up with fading lines when
 they get close. No plugins, no shaders, no runtime dependencies beyond Flutter.
@@ -21,8 +17,8 @@ moment you scale it up or put it behind real content.
 This one buckets particles into a **spatial hash grid** whose cell size equals
 the connection distance. A particle can only link to something in its own cell
 or the eight around it, so each frame walks ~9 cells per particle instead of
-the whole population. The line pass stays close to O(n), and the field holds
-60fps with a few hundred particles on a mid web target.
+the whole population. The line pass stays close to O(n), and the field stays
+smooth with a few hundred particles on a mid web target.
 
 A couple of other things it does so you don't have to:
 
@@ -30,7 +26,7 @@ A couple of other things it does so you don't have to:
 - **Halves** the particle count when the platform requests high contrast.
 - Caches paints and the glow gradient, and only repaints when the simulation
   actually advanced (`shouldRepaint` gates on a generation counter).
-- Excludes itself from the semantics tree — it's decoration, not content.
+- Excludes itself from the semantics tree; it's decoration, not content.
 
 ## Install
 
