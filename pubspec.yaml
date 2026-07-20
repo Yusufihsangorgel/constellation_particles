@@ -3,7 +3,7 @@ description: >-
   A mouse-reactive constellation particle background for Flutter. Particles
   drift, repel from the cursor, and link with fading lines. Near-O(n) spatial
   grid, zero runtime deps.
-version: 0.1.2
+version: 0.2.0
 repository: https://github.com/Yusufihsangorgel/constellation_particles
 issue_tracker: https://github.com/Yusufihsangorgel/constellation_particles/issues
 topics:

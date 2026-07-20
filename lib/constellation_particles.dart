@@ -66,6 +66,10 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   /// Bumped every tick so the painter knows the simulation advanced.
   int _generation = 0;
 
+  /// Whether the platform asked for reduced motion, in which case the
+  /// simulation is held still.
+  bool _reduceMotion = false;
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +92,20 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
     if (target != _particles.length && !_lastSize.isEmpty) {
       _initParticles(_lastSize, count: target);
     }
+
+    // Respect the platform's reduce-motion setting. Drifting particles are
+    // exactly the kind of continuous background movement that setting exists
+    // to stop, so hold the simulation still and paint one frame instead of
+    // hiding the widget: the design survives, the motion does not.
+    final reduce = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (reduce != _reduceMotion) {
+      _reduceMotion = reduce;
+      if (_reduceMotion) {
+        if (_controller.isAnimating) _controller.stop();
+      } else if (!_controller.isAnimating) {
+        _controller.repeat();
+      }
+    }
   }
 
   @override
@@ -102,7 +120,7 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        if (!_controller.isAnimating) _controller.repeat();
+        if (!_reduceMotion && !_controller.isAnimating) _controller.repeat();
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         if (_controller.isAnimating) _controller.stop();

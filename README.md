@@ -23,6 +23,10 @@ smooth with a few hundred particles on a mid web target.
 A couple of other things it does so you don't have to:
 
 - **Pauses** its ticker when the app is hidden or backgrounded.
+- **Holds still** when the platform asks for reduced motion: the constellation
+  is painted, but nothing drifts. Drifting particles in the background are the
+  kind of motion that setting exists to stop, and honouring it should not mean
+  the design disappears.
 - **Halves** the particle count when the platform requests high contrast.
 - Caches paints and the glow gradient, and only repaints when the simulation
   actually advanced (`shouldRepaint` gates on a generation counter).
