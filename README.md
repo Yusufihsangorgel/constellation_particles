@@ -34,9 +34,8 @@ A couple of other things it does so you don't have to:
 
 ## Install
 
-```yaml
-dependencies:
-  constellation_particles: ^0.1.0
+```sh
+flutter pub add constellation_particles
 ```
 
 ## Usage
