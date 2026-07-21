@@ -1,6 +1,6 @@
 # constellation_particles
 
-A mouse-reactive constellation particle field for Flutter. Particles drift,
+A pointer-reactive constellation particle field for Flutter. Particles drift,
 wrap at the edges, repel from the pointer, and link up with fading lines when
 they get close. No plugins, no shaders, no runtime dependencies beyond Flutter.
 
@@ -76,11 +76,15 @@ ConstellationParticles(
 | `repulsionRadius`    | `200.0`     | Pointer influence radius.                               |
 | `repulsionForce`     | `50.0`      | Pointer push strength.                                  |
 | `seed`               | `42`        | Layout seed; fixed by default for reproducible fields.  |
+| `touchReactive`      | `false`     | Let touches drive repulsion too, not just the mouse.    |
 
 ## Notes
 
-- The field is pointer-driven, so the repulsion effect is desktop/web-first;
-  on touch it simply drifts, which is the right default for a background.
+- The mouse cursor drives repulsion on desktop and web out of the box. On
+  touch the field just drifts by default, which is the right call for a
+  background: turning it on would let the widget swallow drags meant for your
+  content. Set `touchReactive: true` when the particles are a foreground
+  surface and you want touches to push them around too.
 - It renders into a `RepaintBoundary`, so it won't drag your content into its
   repaints.
 

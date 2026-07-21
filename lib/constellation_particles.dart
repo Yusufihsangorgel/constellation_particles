@@ -3,12 +3,16 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-/// A mouse-reactive constellation particle field.
+/// A pointer-reactive constellation particle field.
 ///
 /// Particles drift, wrap around the edges, and repel from the pointer.
 /// Nearby particles are joined by fading lines. Neighbour lookups run through
 /// a spatial hash grid, so the per-frame cost stays close to O(n) instead of
 /// the O(n²) you get from comparing every pair.
+///
+/// The mouse cursor drives repulsion on desktop and web. Touch reactivity is
+/// off by default (see [touchReactive]) so the field never steals drag gestures
+/// from the content it sits behind.
 ///
 /// The widget is decorative and excludes itself from the semantics tree.
 /// It pauses its ticker when the app is backgrounded and halves the particle
@@ -23,6 +27,7 @@ class ConstellationParticles extends StatefulWidget {
     this.repulsionRadius = 200.0,
     this.repulsionForce = 50.0,
     this.seed = 42,
+    this.touchReactive = false,
   })  : assert(particleCount >= 0),
         assert(connectionDistance > 0);
 
@@ -50,6 +55,12 @@ class ConstellationParticles extends StatefulWidget {
   /// across rebuilds; pass a varying value for a different arrangement.
   final int seed;
 
+  /// Whether touches also drive the repulsion. Off by default: the mouse
+  /// cursor already reacts on desktop and web, and leaving this off means the
+  /// field never intercepts a touch that belongs to the content behind it.
+  /// Turn it on for a foreground surface where the particles are the point.
+  final bool touchReactive;
+
   @override
   State<ConstellationParticles> createState() => _ConstellationParticlesState();
 }
@@ -69,6 +80,11 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   /// Whether the platform asked for reduced motion, in which case the
   /// simulation is held still.
   bool _reduceMotion = false;
+
+  /// Whether the pointer is currently over the field and driving repulsion.
+  /// Exposed for tests that assert touch reactivity engaged.
+  @visibleForTesting
+  bool get isPointerInside => _mouseInside;
 
   @override
   void initState() {
@@ -202,42 +218,66 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   }
 
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-        child: MouseRegion(
-          onHover: (e) {
-            _mousePos = e.localPosition;
-            _mouseInside = true;
-          },
-          onExit: (_) => _mouseInside = false,
-          hitTestBehavior: HitTestBehavior.translucent,
-          child: IgnorePointer(
-            child: RepaintBoundary(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final size =
-                      Size(constraints.maxWidth, constraints.maxHeight);
-                  if (size != _lastSize || _particles.isEmpty) {
-                    _initParticles(size);
-                  }
-                  return AnimatedBuilder(
-                    animation: _controller,
-                    builder: (_, __) => CustomPaint(
-                      size: size,
-                      painter: _ConstellationPainter(
-                        particles: _particles,
-                        color: widget.color,
-                        connectionDistance: widget.connectionDistance,
-                        generation: _generation,
-                        grid: _grid,
-                      ),
-                    ),
-                  );
-                },
+  Widget build(BuildContext context) {
+    Widget field = IgnorePointer(
+      child: RepaintBoundary(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final size = Size(constraints.maxWidth, constraints.maxHeight);
+            if (size != _lastSize || _particles.isEmpty) {
+              _initParticles(size);
+            }
+            return AnimatedBuilder(
+              animation: _controller,
+              builder: (_, __) => CustomPaint(
+                size: size,
+                painter: _ConstellationPainter(
+                  particles: _particles,
+                  color: widget.color,
+                  connectionDistance: widget.connectionDistance,
+                  generation: _generation,
+                  grid: _grid,
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
+      ),
+    );
+
+    // Touch does not fire MouseRegion.onHover, so opt in to a pointer listener
+    // that feeds the same _mousePos/_mouseInside the mouse path already uses.
+    // Translucent behaviour lets it register a hit even though IgnorePointer
+    // keeps the field itself out of hit testing.
+    if (widget.touchReactive) {
+      field = Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (e) {
+          _mousePos = e.localPosition;
+          _mouseInside = true;
+        },
+        onPointerMove: (e) {
+          _mousePos = e.localPosition;
+          _mouseInside = true;
+        },
+        onPointerUp: (_) => _mouseInside = false,
+        onPointerCancel: (_) => _mouseInside = false,
+        child: field,
       );
+    }
+
+    return ExcludeSemantics(
+      child: MouseRegion(
+        onHover: (e) {
+          _mousePos = e.localPosition;
+          _mouseInside = true;
+        },
+        onExit: (_) => _mouseInside = false,
+        hitTestBehavior: HitTestBehavior.translucent,
+        child: field,
+      ),
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------

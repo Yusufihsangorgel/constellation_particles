@@ -1,3 +1,13 @@
+## 0.3.0
+
+- Add `touchReactive`, off by default. Repulsion was gated on `MouseRegion`'s
+  onHover, which never fires for touch, so on phones and tablets the field only
+  drifted and the pointer reaction was gone. Setting the flag adds a pointer
+  Listener that feeds the same repulsion path from touch down and move events.
+  It stays off by default so the widget keeps its current behaviour and does
+  not intercept a drag meant for the content behind it. Docs now say
+  pointer-reactive rather than mouse-reactive.
+
 ## 0.2.2
 
 - Install instructions now say `pub add` instead of pinning a version. The
