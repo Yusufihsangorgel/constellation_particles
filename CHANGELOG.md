@@ -1,3 +1,15 @@
+## 0.3.1
+
+- Fix a `RangeError` that could crash the painter when the particle count
+  drops after the spatial grid has been built. The grid is only rebuilt on
+  the next animation tick, so shrinking `particleCount` at runtime, or the
+  platform switching on high contrast (which halves the count on its own),
+  could leave the grid holding indices from the larger, previous population
+  for one frame. The painter used those stale indices to look up particles
+  in the new, shorter list and threw. `_initParticles` now clears the grid
+  as soon as it replaces the particle list, and the painter's neighbour loop
+  also skips any index the current list is too short for.
+
 ## 0.3.0
 
 - Add `touchReactive`, off by default. Repulsion was gated on `MouseRegion`'s

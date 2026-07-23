@@ -168,6 +168,14 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
       ),
     );
     _lastSize = size;
+
+    // The grid still holds indices sized for the previous population. When
+    // this one is shorter, because particleCount dropped at runtime or
+    // high contrast just halved the count, a stale index would be out of
+    // range the moment the painter runs, before the next tick rebuilds the
+    // grid. Clearing it here means that one frame paints with no connecting
+    // lines instead of throwing.
+    _grid.clear();
   }
 
   void _tick() {
@@ -354,7 +362,10 @@ class _ConstellationPainter extends CustomPainter {
     for (var i = 0; i < particles.length; i++) {
       final pi = particles[i];
       for (final j in grid.getNearby(pi.x, pi.y)) {
-        if (j <= i) continue; // each pair once
+        // j <= i skips a pair already handled from the other side; the
+        // upper bound guards against a grid index left over from a larger
+        // population (see _initParticles).
+        if (j <= i || j >= particles.length) continue;
         final pj = particles[j];
         final dx = pi.x - pj.x;
         final dy = pi.y - pj.y;
