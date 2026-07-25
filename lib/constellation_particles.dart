@@ -29,7 +29,29 @@ class ConstellationParticles extends StatefulWidget {
     this.seed = 42,
     this.touchReactive = false,
   })  : assert(particleCount >= 0),
-        assert(connectionDistance > 0);
+        assert(connectionDistance > 0),
+        // The three physics multipliers reach the spatial grid, whose cell
+        // index is an int: a NaN there throws `Infinity or NaN toInt` out of
+        // both the ticker and paint(), once per frame for as long as the
+        // widget lives. `connectionDistance > 0` already rejects a NaN by
+        // being false for it; these had nothing.
+        // Written as comparisons, not `isFinite`: this is a const constructor
+        // and a property access is not a constant expression. Every one of
+        // these is false for NaN, which is the value that actually breaks.
+        assert(
+          speed > double.negativeInfinity && speed < double.infinity,
+          'speed must be finite',
+        ),
+        assert(
+          repulsionRadius > double.negativeInfinity &&
+              repulsionRadius < double.infinity,
+          'repulsionRadius must be finite',
+        ),
+        assert(
+          repulsionForce > double.negativeInfinity &&
+              repulsionForce < double.infinity,
+          'repulsionForce must be finite',
+        );
 
   /// Number of particles at full density. Halved under high-contrast mode.
   final int particleCount;

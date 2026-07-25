@@ -1,3 +1,22 @@
+## 1.0.0
+
+First stable release. The API below is what 1.0 freezes.
+
+- **Fix a per-frame exception storm from a NaN multiplier.** `particleCount`
+  and `connectionDistance` were asserted; `speed`, `repulsionRadius` and
+  `repulsionForce` were not. All three reach the spatial grid, whose cell index
+  is an `int`, so a NaN threw `Unsupported operation: Infinity or NaN toInt`
+  out of both the animation ticker and `paint()` — not once, but on every frame
+  for as long as the widget lived. All three now assert, written as
+  comparisons rather than `isFinite` because the constructor is `const` and a
+  property access is not a constant expression.
+
+Checked and unchanged for this release, by running each rather than reading for
+it: infinite and negative `speed`, negative and NaN `repulsionRadius` and
+`repulsionForce` before the assert, a `connectionDistance` of 1e-9 and of 1e9,
+`particleCount` of 0 and 1, a zero-size viewport, and `particleCount` churned
+200 → 0 → 200 → 5 across consecutive frames. None misbehaved.
+
 ## 0.3.1
 
 - Fix a `RangeError` that could crash the painter when the particle count

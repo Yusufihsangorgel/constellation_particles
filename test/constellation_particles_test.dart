@@ -43,4 +43,23 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     expect(tester.takeException(), isNull);
   });
+
+  test('the physics multipliers reject NaN', () {
+    // A NaN reached the spatial grid, whose cell index is an int, and threw
+    // `Infinity or NaN toInt` out of both the ticker and paint() — once per
+    // frame, for as long as the widget stayed alive.
+    expect(() => ConstellationParticles(speed: double.nan), throwsAssertionError);
+    expect(
+      () => ConstellationParticles(repulsionRadius: double.nan),
+      throwsAssertionError,
+    );
+    expect(
+      () => ConstellationParticles(repulsionForce: double.nan),
+      throwsAssertionError,
+    );
+    // Ordinary values, including the calibrated defaults, still build.
+    expect(const ConstellationParticles(), isNotNull);
+    expect(const ConstellationParticles(speed: 0), isNotNull);
+    expect(const ConstellationParticles(speed: -1), isNotNull);
+  });
 }
