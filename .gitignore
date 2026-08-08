@@ -8,3 +8,9 @@ pubspec.lock
 .vscode/
 *.iml
 .DS_Store
+
+# The AOT binary example/README.md tells the reader to build next to the
+# script: `dart compile exe frame_cost.dart -o frame_cost`. 5 MB of it, and a
+# doc that walks someone into committing a build artifact is a doc with a bug.
+example/frame_cost
+example/frame_cost.exe
