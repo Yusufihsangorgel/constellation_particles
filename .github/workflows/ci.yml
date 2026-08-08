@@ -24,3 +24,9 @@ jobs:
       - run: dart analyze --fatal-infos
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter test
+
+      # example/README.md quotes this script's tables, so run it. It is a real
+      # check rather than a smoke test: the script exits non-zero if the
+      # every-pair and grid passes stop agreeing on how many lines they drew,
+      # which is what halving the grid's cell size does.
+      - run: dart run example/frame_cost.dart
