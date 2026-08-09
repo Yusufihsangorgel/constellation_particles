@@ -11,3 +11,7 @@ dependencies:
     sdk: flutter
   constellation_particles:
     path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

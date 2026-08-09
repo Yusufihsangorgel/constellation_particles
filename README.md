@@ -5,6 +5,9 @@ background that never asks keeps drifting anyway. This one holds still when the
 platform requests reduced motion, and leaves the constellation on screen while
 it does.
 
+`example/lib/main.dart` puts that request behind a switch: flip it and the
+points stop where they are, with the constellation still on screen.
+
 ![A dark phone screen with pale teal points drifting across it, each joined by a thin line to the neighbours near enough to reach.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/demo.gif)
 
 Neighbour lookups run through a spatial hash grid: a particle's work is set by

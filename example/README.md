@@ -150,12 +150,25 @@ A dark page with a 140-particle field behind it. Move the cursor and the
 particles get out of its way; the repulsion is driven by `MouseRegion`, so on a
 phone the field just drifts unless you pass `touchReactive: true`.
 
-Two things worth trying, because both are easy to get wrong in your own app:
+The switch along the bottom asks the field for reduced motion without sending
+you to the OS accessibility panel. Flip it: the points stop where they are and
+the constellation stays on screen. That is deliberate, because hiding the
+widget would be a worse answer to a request for less motion than holding it
+still. The switch is or-ed with the platform's own setting and can only add the
+request, which is why it reads off and cannot release the field when you
+already have reduce-motion turned on in the OS.
 
-- Turn on reduce-motion in the OS while it runs. The constellation stays,
-  the drift stops. That is deliberate: hiding the widget would be a worse
-  answer to a request for less motion than holding it still.
+Two more things worth trying, because both are easy to get wrong in your own
+app:
+
+- Turn on reduce-motion in the OS while it runs. Same outcome as the switch,
+  and this is the path a real user takes.
 - Turn on high contrast. The particle count halves.
+
+`flutter test` in this directory checks that demonstration rather than trusting
+it: that the field keeps a ticker scheduled until the switch is flipped, that
+flipping it stops the ticker while leaving the painter in the tree, and that a
+platform request holds the field with the switch still reading off.
 
 ## A note on the cell size
 
