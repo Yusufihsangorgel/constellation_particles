@@ -2,7 +2,7 @@
 
 Two of them. One is the field itself, and needs a device or a browser. The other
 is a plain Dart script that needs neither, and answers the question the README's
-"Why this exists" section raises: what does the spatial grid actually buy?
+"What the grid costs" section raises: what does the spatial grid actually buy?
 
 ## What the connecting-line pass costs
 
