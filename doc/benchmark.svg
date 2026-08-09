@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000.0" height="640.0" viewBox="0 0 1000.0 640.0">
+<rect width="1000.0" height="640.0" fill="#0A0E14"/>
+<text x="40.0" y="52.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="27.0" fill="#E2E8F0" text-anchor="start" font-weight="600">What the spatial grid removes</text>
+<text x="40.0" y="82.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15.0" fill="#7D8FA3" text-anchor="start" font-weight="normal">Distance checks per frame. Both axes are logarithmic, so a straight line is a power law and its slope is the exponent.</text>
+<rect x="80.0" y="178.0" width="382.0" height="328.0" fill="#0E1420"/>
+<text x="80.0" y="142.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18.0" fill="#E2E8F0" text-anchor="start" font-weight="600">Canvas stays 1200x800</text>
+<text x="80.0" y="164.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#7D8FA3" text-anchor="start" font-weight="normal">turning particleCount up on one window</text>
+<line x1="80.0" y1="506.0" x2="462.0" y2="506.0" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="510.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100</text>
+<line x1="80.0" y1="451.33333333333337" x2="462.0" y2="451.33333333333337" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="455.33333333333337" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">1k</text>
+<line x1="80.0" y1="396.6666666666667" x2="462.0" y2="396.6666666666667" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="400.6666666666667" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">10k</text>
+<line x1="80.0" y1="342.0" x2="462.0" y2="342.0" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="346.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100k</text>
+<line x1="80.0" y1="287.33333333333337" x2="462.0" y2="287.33333333333337" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="291.33333333333337" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">1M</text>
+<line x1="80.0" y1="232.66666666666663" x2="462.0" y2="232.66666666666663" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="236.66666666666663" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">10M</text>
+<line x1="80.0" y1="178.0" x2="462.0" y2="178.0" stroke="#1B2635" stroke-width="1"/>
+<text x="70.0" y="182.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100M</text>
+<polyline points="80.0,446.5 156.4,413.4 232.8,380.3 309.2,347.4 385.6,314.4 462.0,281.5" fill="none" stroke="#FFB86B" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="80.0" cy="446.5" r="4" fill="#FFB86B"/>
+<circle cx="156.4" cy="413.4" r="4" fill="#FFB86B"/>
+<circle cx="232.8" cy="380.3" r="4" fill="#FFB86B"/>
+<circle cx="309.2" cy="347.4" r="4" fill="#FFB86B"/>
+<circle cx="385.6" cy="314.4" r="4" fill="#FFB86B"/>
+<circle cx="462.0" cy="281.5" r="4" fill="#FFB86B"/>
+<polyline points="80.0,489.9 156.4,457.9 232.8,429.3 309.2,397.7 385.6,365.7 462.0,333.3" fill="none" stroke="#64FFDA" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="80.0" cy="489.9" r="4" fill="#64FFDA"/>
+<circle cx="156.4" cy="457.9" r="4" fill="#64FFDA"/>
+<circle cx="232.8" cy="429.3" r="4" fill="#64FFDA"/>
+<circle cx="309.2" cy="397.7" r="4" fill="#64FFDA"/>
+<circle cx="385.6" cy="365.7" r="4" fill="#64FFDA"/>
+<circle cx="462.0" cy="333.3" r="4" fill="#64FFDA"/>
+<line x1="96.0" y1="204.0" x2="118.0" y2="204.0" stroke="#FFB86B" stroke-width="2.5"/>
+<circle cx="107.0" cy="204.0" r="3.5" fill="#FFB86B"/>
+<text x="128.0" y="208.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#E2E8F0" text-anchor="start" font-weight="normal">every pair</text>
+<text x="236.0" y="208.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="13.0" fill="#FFB86B" text-anchor="start" font-weight="normal">slope 2.0</text>
+<line x1="96.0" y1="226.0" x2="118.0" y2="226.0" stroke="#64FFDA" stroke-width="2.5"/>
+<circle cx="107.0" cy="226.0" r="3.5" fill="#64FFDA"/>
+<text x="128.0" y="230.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#E2E8F0" text-anchor="start" font-weight="normal">spatial grid</text>
+<text x="236.0" y="230.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="13.0" fill="#64FFDA" text-anchor="start" font-weight="normal">slope 1.9</text>
+<line x1="80.0" y1="506.0" x2="80.0" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="80.0" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">50</text>
+<line x1="156.40000000000006" y1="506.0" x2="156.40000000000006" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="156.40000000000006" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">100</text>
+<line x1="232.79999999999995" y1="506.0" x2="232.79999999999995" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="232.79999999999995" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">200</text>
+<line x1="309.2" y1="506.0" x2="309.2" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="309.2" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">400</text>
+<line x1="385.59999999999997" y1="506.0" x2="385.59999999999997" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="385.59999999999997" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">800</text>
+<line x1="462.0" y1="506.0" x2="462.0" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="462.0" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">1600</text>
+<text x="271.0" y="550.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">particles</text>
+<rect x="564.0" y="178.0" width="382.0" height="328.0" fill="#0E1420"/>
+<text x="564.0" y="142.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="18.0" fill="#E2E8F0" text-anchor="start" font-weight="600">Canvas grows with the count</text>
+<text x="564.0" y="164.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#7D8FA3" text-anchor="start" font-weight="normal">same crowding per particle, bigger field</text>
+<line x1="564.0" y1="506.0" x2="946.0" y2="506.0" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="510.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100</text>
+<line x1="564.0" y1="451.33333333333337" x2="946.0" y2="451.33333333333337" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="455.33333333333337" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">1k</text>
+<line x1="564.0" y1="396.6666666666667" x2="946.0" y2="396.6666666666667" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="400.6666666666667" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">10k</text>
+<line x1="564.0" y1="342.0" x2="946.0" y2="342.0" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="346.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100k</text>
+<line x1="564.0" y1="287.33333333333337" x2="946.0" y2="287.33333333333337" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="291.33333333333337" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">1M</text>
+<line x1="564.0" y1="232.66666666666663" x2="946.0" y2="232.66666666666663" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="236.66666666666663" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">10M</text>
+<line x1="564.0" y1="178.0" x2="946.0" y2="178.0" stroke="#1B2635" stroke-width="1"/>
+<text x="554.0" y="182.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="end" font-weight="normal">100M</text>
+<polyline points="564.0,413.4 691.3,347.4 818.7,281.5 946.0,215.7" fill="none" stroke="#FFB86B" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="564.0" cy="413.4" r="4" fill="#FFB86B"/>
+<circle cx="691.3" cy="347.4" r="4" fill="#FFB86B"/>
+<circle cx="818.7" cy="281.5" r="4" fill="#FFB86B"/>
+<circle cx="946.0" cy="215.7" r="4" fill="#FFB86B"/>
+<polyline points="564.0,457.9 691.3,429.0 818.7,396.2 946.0,362.5" fill="none" stroke="#64FFDA" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="564.0" cy="457.9" r="4" fill="#64FFDA"/>
+<circle cx="691.3" cy="429.0" r="4" fill="#64FFDA"/>
+<circle cx="818.7" cy="396.2" r="4" fill="#64FFDA"/>
+<circle cx="946.0" cy="362.5" r="4" fill="#64FFDA"/>
+<line x1="580.0" y1="204.0" x2="602.0" y2="204.0" stroke="#FFB86B" stroke-width="2.5"/>
+<circle cx="591.0" cy="204.0" r="3.5" fill="#FFB86B"/>
+<text x="612.0" y="208.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#E2E8F0" text-anchor="start" font-weight="normal">every pair</text>
+<text x="720.0" y="208.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="13.0" fill="#FFB86B" text-anchor="start" font-weight="normal">slope 2.0</text>
+<line x1="580.0" y1="226.0" x2="602.0" y2="226.0" stroke="#64FFDA" stroke-width="2.5"/>
+<circle cx="591.0" cy="226.0" r="3.5" fill="#64FFDA"/>
+<text x="612.0" y="230.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#E2E8F0" text-anchor="start" font-weight="normal">spatial grid</text>
+<text x="720.0" y="230.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="13.0" fill="#64FFDA" text-anchor="start" font-weight="normal">slope 1.0</text>
+<line x1="564.0" y1="506.0" x2="564.0" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="564.0" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">100</text>
+<line x1="691.3333333333333" y1="506.0" x2="691.3333333333333" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="691.3333333333333" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">400</text>
+<line x1="818.6666666666667" y1="506.0" x2="818.6666666666667" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="818.6666666666667" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">1600</text>
+<line x1="946.0" y1="506.0" x2="946.0" y2="511.0" stroke="#7D8FA3" stroke-width="1"/>
+<text x="946.0" y="528.0" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="12.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">6400</text>
+<text x="755.0" y="550.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">particles</text>
+<text x="500.0" y="580.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">Fewer checks is not less time. On the left the grid does the work in the shape it already had,</text>
+<text x="500.0" y="600.0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14.0" fill="#7D8FA3" text-anchor="middle" font-weight="normal">and pays for the bookkeeping: measured there, it is the slower pass. example/README.md has the wall clock.</text>
+</svg>

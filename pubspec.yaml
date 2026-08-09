@@ -1,8 +1,8 @@
 name: constellation_particles
-description: >-
-  A pointer-reactive constellation particle background for Flutter. Particles
-  drift, repel from the cursor, and link with fading lines. Near-O(n) spatial
-  grid, zero runtime deps.
+# One line, double-quoted, on purpose. A folded `>-` block joins its lines and
+# has split a word across the join on other packages in this portfolio, which
+# then shows up in the live screenshot caption.
+description: "Pointer-reactive constellation particle background for Flutter. Honours reduced motion and high contrast, pauses when backgrounded, zero runtime deps."
 version: 1.0.0
 repository: https://github.com/Yusufihsangorgel/constellation_particles
 issue_tracker: https://github.com/Yusufihsangorgel/constellation_particles/issues
@@ -13,11 +13,16 @@ topics:
   - background
   - custompainter
 
+# The card thumbnail comes from the first entry and is fitted, rather than
+# cropped, into 190x190: a wide or tall image becomes an unreadable strip
+# there. params.webp is close to square (1000x1033). doc/demo.gif is 260x513
+# and would fit to 96x190, so it stays a README image, which pub.dev serves
+# from GitHub raw instead of from this archive.
 screenshots:
-  - description: >-
-      The animated background in motion: points drifting across a dark canvas,
-      each joined by a line to the neighbours near enough to reach.
-    path: doc/demo.gif
+  - description: "Four panels of one particle field, showing what particleCount and connectionDistance each change."
+    path: doc/params.webp
+  - description: "Distance checks per frame on log-log axes, comparing the all-pairs pass with the spatial grid on a fixed and on a growing canvas."
+    path: doc/benchmark.png
 
 environment:
   sdk: ^3.5.0

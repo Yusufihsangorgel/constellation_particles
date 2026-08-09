@@ -17,8 +17,8 @@ checks; this package buckets particles into a grid whose cell size is the
 connection distance, so a particle only looks at its own cell and the eight
 around it. The script runs both passes over the same field, requires them to
 have drawn the same number of lines, and times them. Before any of that it
-checks the property the grid rests on — that every pair inside the connection
-distance really is in the nine cells around it — and then re-runs that check
+checks the property the grid rests on (that every pair inside the connection
+distance really is in the nine cells around it) and then re-runs that check
 against a deliberately broken grid to confirm the check can fail at all.
 
 It reports three columns, because there turned out to be three answers: every
@@ -47,14 +47,14 @@ and will come out the same on your machine. At 800 particles the grid asks
 what the grid was built to do, and it does it.
 
 The time columns are where it gets interesting, and they are honest rather than
-flattering. **The grid column — the pass the widget actually runs — is the
-slower of the two at every population in that table.** A distance check is about
+flattering. **The grid column, which is the pass the widget actually runs, is
+the slower of the two at every population in that table.** A distance check is about
 a nanosecond of arithmetic. At 800 particles the grid removes seven of every
 eight of them and puts nine hash-map lookups per particle, plus a full rebuild
 every frame, in their place. Fewer operations is not the same as less time.
 
 The third column locates the rest of it. `getNearby` allocates a fresh list per
-particle and copies every index in nine cells into it — roughly twice the
+particle and copies every index in nine cells into it, roughly twice the
 candidate count, which is the very thing the grid exists to reduce. Walking
 those cells where they sit instead, same cells and same answer, is the only
 column that ever comes out ahead: it wins from about 400 particles up and loses
@@ -79,9 +79,9 @@ and it is the one usually meant when someone calls such a pass "close to O(n)".
 Each step multiplies the count by four. Every-pair's checks go up sixteen times
 per step; the grid's go up about four. That is a difference in shape rather than
 a constant factor, and here the wall clock follows it: the crossover lands
-between 400 and 1600 particles, and by 6400 the gap is roughly fivefold —
-candidate list and all. (That ratio moved between 4.5 and 5.9 across runs on the
-same machine, which is a fair reminder of what these columns are worth.)
+between 400 and 1600 particles, and by 6400 the gap is roughly fivefold, with
+the candidate list left in. (That ratio moved between 4.5 and 5.9 across runs on
+the same machine, which is a fair reminder of what these columns are worth.)
 
 Both tables are true, and together they say something more useful than either
 alone: **the grid bounds a particle's work by how crowded its neighbourhood is,
@@ -89,10 +89,18 @@ not by how many particles exist.** On a canvas that grows with the count that is
 an order of magnitude. On a canvas that stays put it is a constant factor, and
 the bookkeeping can eat it.
 
+![Two log-log panels of distance checks per frame. On the fixed canvas both passes have slope 2 and the grid line runs parallel below all-pairs. On the growing canvas the grid drops to slope 1 while all-pairs stays at 2.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/benchmark.png)
+
+That chart is the check columns of both tables above, drawn on log-log axes by
+`dart run tool/benchmark_chart.dart`, which runs this script and plots what it
+prints. It leaves the microsecond columns out on purpose: the check counts are
+arithmetic over a fixed seed and reproduce anywhere, while the timings move
+with the machine.
+
 ### Measure the mode you ship
 
 `dart run` gives you the JIT. A Flutter release build is AOT-compiled, and the
-map-heavy code fares worse there — enough to change the answer:
+map-heavy code fares worse there by enough to change the answer:
 
 ```sh
 cd example
@@ -110,7 +118,7 @@ dart compile exe frame_cost.dart -o frame_cost && ./frame_cost
 ```
 
 Under AOT, on a fixed canvas, both grid columns lose at every population in that
-table — including the one without the allocation. Three runs agreed on the
+table, including the one without the allocation. Three runs agreed on the
 ordering. All the timings on this page are one arm64 laptop on Dart 3.11.0,
 each the fastest of three rounds after a warm-up. Yours will differ; the point
 is that the ordering here is not a constant of nature, so if it matters to you,
@@ -127,7 +135,7 @@ and a Flutter timeline is the right instrument for that one.
 
 So the practical reading, for someone deciding whether to use this widget: at a
 few hundred particles on a normal window, neither pass is anywhere near a frame
-budget — both are under a millisecond — and what you should be sizing is the
+budget, since both are under a millisecond, and what you should be sizing is the
 number of *lines* you are asking the GPU to draw. The particle count controls
 that quadratically. 400 particles is 3,563 lines; 800 is 13,611.
 
@@ -145,7 +153,7 @@ phone the field just drifts unless you pass `touchReactive: true`.
 Two things worth trying, because both are easy to get wrong in your own app:
 
 - Turn on reduce-motion in the OS while it runs. The constellation stays,
-  the drift stops. That is deliberate — hiding the widget would be a worse
+  the drift stops. That is deliberate: hiding the widget would be a worse
   answer to a request for less motion than holding it still.
 - Turn on high contrast. The particle count halves.
 
@@ -155,6 +163,6 @@ The script's last section demonstrates the one thing in the grid that must not
 be tuned. Its cell size equals the connection distance, and that is what makes
 nine cells enough: two particles closer together than one cell size cannot be
 two cells apart. Halve the cells and the pass gets *faster* while silently
-dropping a third of the lines — at 400 particles, 1,091 of 3,563. Larger cells
+dropping a third of the lines: at 400 particles, 1,091 of 3,563. Larger cells
 stay correct and only cost more. Smaller ones are a rendering bug that profiles
 well, which is the hardest kind to notice.

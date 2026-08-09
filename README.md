@@ -1,59 +1,14 @@
 # constellation_particles
 
-A pointer-reactive constellation particle field for Flutter. Particles drift,
-wrap at the edges, repel from the pointer, and link up with fading lines when
-they get close. No plugins, no shaders, no runtime dependencies beyond Flutter.
+Decorative motion is the first thing a reader turns off, and a particle
+background that never asks keeps drifting anyway. This one holds still when the
+platform requests reduced motion, and leaves the constellation on screen while
+it does.
 
-![demo](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/demo.gif)
+![A dark phone screen with pale teal points drifting across it, each joined by a thin line to the neighbours near enough to reach.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/demo.gif)
 
-## Why this exists
-
-Connecting-line particle fields are everywhere, and the neighbour pass is
-usually O(n²): every frame, each particle is distance-checked against every
-other one to decide whether to draw a line. At 100 particles that is ~5,000
-checks a frame; at 800, 319,600.
-
-That "usually" is counted rather than assumed. Searching pub.dev turns up eight
-other packages that draw lines between nearby particles; in the versions current
-in August 2026, seven of the eight do the full pairwise scan, and two of those
-seven check every pair twice, drawing each line on top of itself. The exception
-is `particles_network`, which queries a quadtree per particle — so the quadratic
-pass is the norm in this category, not the whole of it.
-
-This one buckets particles into a **spatial hash grid** whose cell size equals
-the connection distance. A particle can only link to something in its own cell
-or the eight around it, so each frame walks ~9 cells per particle instead of
-the whole population. At 800 particles on a 1200x800 canvas that is 36,861
-distance checks a frame instead of 319,600.
-
-Fewer checks is not less time, though, and `example/frame_cost.dart` times both
-passes over the same field rather than leaving that to the imagination. On a
-canvas that stays 1200x800 while the count rises, the grid pass is the *slower*
-of the two at every count the script tries: its own bookkeeping — a fresh
-candidate list per particle, nine map lookups, a rebuild every frame — costs
-more than the distance arithmetic it skips. Where the grid does pay is a canvas
-that grows with the count, which is where its advantage is a change of shape
-rather than a constant factor: 6400 particles on 9600x6400 came out about 5x
-faster than every pair.
-
-Either way, at a few hundred particles both passes are microseconds rather than
-milliseconds, so neither is what would cost you a frame. The quantity to size
-is the number of *lines* — 400 particles is 3,563 links, 800 is 13,611, and
-each one is a `drawLine` with its own colour. That is the part the script does
-not measure and a Flutter timeline does. `example/README.md` has the tables,
-including the AOT run, which is the mode a Flutter release build gets.
-
-A couple of other things it does so you don't have to:
-
-- **Pauses** its ticker when the app is hidden or backgrounded.
-- **Holds still** when the platform asks for reduced motion: the constellation
-  is painted, but nothing drifts. Drifting particles in the background are the
-  kind of motion that setting exists to stop, and honouring it should not mean
-  the design disappears.
-- **Halves** the particle count when the platform requests high contrast.
-- Caches paints and the glow gradient, and only repaints when the simulation
-  actually advanced (`shouldRepaint` gates on a generation counter).
-- Excludes itself from the semantics tree; it's decoration, not content.
+Neighbour lookups run through a spatial hash grid: a particle's work is set by
+how crowded its own neighbourhood is rather than by how many particles exist.
 
 ## Install
 
@@ -61,32 +16,84 @@ A couple of other things it does so you don't have to:
 flutter pub add constellation_particles
 ```
 
-## Usage
+## Use it
 
-Drop it into a `Stack` behind your content and give it a bounded size:
+Drop it into a `Stack` behind your content and give it a bounded size.
 
 ```dart
 Stack(
   children: [
-    const Positioned.fill(
-      child: ConstellationParticles(),
-    ),
+    const Positioned.fill(child: ConstellationParticles()),
     yourContent,
   ],
 )
 ```
 
-Tune it:
+## Tune it
+
+Two parameters decide how the field reads. `particleCount` sets how many points
+there are, and `connectionDistance` sets how far apart two of them can be and
+still be joined.
 
 ```dart
 ConstellationParticles(
-  particleCount: 160,
+  particleCount: 60,
+  connectionDistance: 80,
   color: const Color(0xFF64FFDA),
-  speed: 1.2,
-  connectionDistance: 140,
-  repulsionRadius: 220,
 )
 ```
+
+![Four panels of the same particle field. Across each row the linking distance doubles and the mesh fills in; down each column the particle count rises from 60 to 200.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/params.webp)
+
+Reach for `connectionDistance` before `particleCount`. The GPU draws one line
+per link rather than one per particle, and raising the count multiplies links
+quadratically: at the default distance, 400 particles is 3,563 links and 800 is
+13,611.
+
+## What the grid costs
+
+Connecting-line fields usually decide which pairs to join by measuring every
+particle against every other one. This one buckets particles into a grid whose
+cell size equals the connection distance, which leaves a particle able to reach
+only its own cell and the eight around it.
+
+![Two log-log panels of distance checks per frame. On a fixed canvas both passes have slope 2 and the grid sits a constant distance below. On a growing canvas the grid falls to slope 1 while all-pairs stays at 2.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/benchmark.png)
+
+The result splits in two, and only one half flatters the grid. On a canvas that
+stays one size it removes about eight distance checks in nine and still runs
+slower, because nine hash-map lookups per particle cost more than the
+arithmetic they replaced. On a canvas that grows with the count the exponent
+changes instead of the constant, and there the grid pass came out roughly five
+times faster at 6400 particles.
+
+Either way, at a few hundred particles on a normal window both passes take
+microseconds. `example/frame_cost.dart` produces every number above, and
+`example/README.md` has the tables, the hardware they were measured on, and the
+AOT run that a Flutter release build actually uses.
+
+## What it will not do
+
+- It paints a background. No API attaches particles to widgets, emits them from
+  a point, or reacts to the content in front of them.
+- Touch is inert until you pass `touchReactive: true`. A field that grabbed
+  pointers by default would swallow drags meant for your UI.
+- `particleCount` is a request. High-contrast mode halves it.
+- The measurements above cover the neighbour pass and nothing else. Whether the
+  pass or the drawing is what costs you a frame is a question for a Flutter
+  timeline.
+
+## Alternatives
+
+`animated_background` (311 likes), `particle_field` (143) and
+`particles_network` (66) are all older and more widely used than this package.
+Reading their published archives on 2026-08-09, none of the three mentions
+`disableAnimations`, `highContrast` or `AppLifecycleState` anywhere, and none
+puts a node into the semantics tree. Closing that gap is why this package was
+written.
+
+If you have accessibility covered elsewhere, `particles_network` is the one
+worth looking at. Of the three it is the only one that avoids the all-pairs
+scan, using a quadtree where this package uses a grid.
 
 ## Parameters
 
@@ -99,17 +106,20 @@ ConstellationParticles(
 | `repulsionRadius`    | `200.0`     | Pointer influence radius.                               |
 | `repulsionForce`     | `50.0`      | Pointer push strength.                                  |
 | `seed`               | `42`        | Layout seed; fixed by default for reproducible fields.  |
-| `touchReactive`      | `false`     | Let touches drive repulsion too, not just the mouse.    |
+| `touchReactive`      | `false`     | Let touches drive repulsion too, as well as the mouse.  |
 
-## Notes
+The mouse drives repulsion on desktop and web with no configuration. Set
+`touchReactive: true` when the particles are a foreground surface and you want
+touches to push them around as well.
 
-- The mouse cursor drives repulsion on desktop and web out of the box. On
-  touch the field just drifts by default, which is the right call for a
-  background: turning it on would let the widget swallow drags meant for your
-  content. Set `touchReactive: true` when the particles are a foreground
-  surface and you want touches to push them around too.
-- It renders into a `RepaintBoundary`, so it won't drag your content into its
-  repaints.
+## What else it handles
+
+- Pauses its ticker when the app is hidden or backgrounded.
+- Halves the particle count when the platform requests high contrast.
+- Caches its paints and the glow gradient, and repaints only after the
+  simulation has actually advanced.
+- Excludes itself from the semantics tree, being decoration.
+- Renders inside a `RepaintBoundary`; your content stays out of its repaints.
 
 ## License
 

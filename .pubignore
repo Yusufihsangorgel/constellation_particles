@@ -20,3 +20,20 @@ example/ios/
 # list and took the archive from 1 MB to 4 MB.
 example/frame_cost
 example/frame_cost.exe
+
+# The demo animation is 1.79 MiB and was the whole of this package's download.
+# It does not need to ship: pub.dev never reads README images out of the
+# archive, it rewrites them to proxy the repository, so the file is fetched
+# from GitHub raw whether or not it is in here. Keeping it out took the archive
+# from 1.85 MiB to well under a tenth of that.
+#
+# Re-encoding it was measured and rejected instead of guessed. Animated WebP at
+# q60 is 6% of the size, and it erases most of the connecting lines, which are
+# the subject. Lossless animated WebP keeps them and still costs 1.49 MiB.
+doc/demo.gif
+
+# Sources for the two generated figures, and the blog diagram. The figures
+# themselves are `screenshots:` entries and have to stay in the archive; their
+# SVG is only needed to regenerate them, which tool/ does from scratch anyway.
+doc/*.svg
+doc/blog/
