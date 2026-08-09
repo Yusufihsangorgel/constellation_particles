@@ -1,3 +1,8 @@
+## 1.0.2
+
+- A widget test covers the example. It is this package's only visual surface
+  and nothing asserted it still built. Docs and test only.
+
 ## 1.0.1
 
 No library code changed in this release. `lib/` is byte-identical to 1.0.0.
