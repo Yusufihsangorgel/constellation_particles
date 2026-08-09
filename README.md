@@ -10,6 +10,36 @@ points stop where they are, with the constellation still on screen.
 
 ![A dark phone screen with pale teal points drifting across it, each joined by a thin line to the neighbours near enough to reach.](https://raw.githubusercontent.com/Yusufihsangorgel/constellation_particles/main/doc/demo.gif)
 
+## Why this instead of what you already have
+
+**Instead of a bare `CustomPainter`.** It is an abstract class whose contract
+is one method, `paint(Canvas, Size)` (`rendering/custom_paint.dart:149`), and
+whose `semanticsBuilder` returns `null` until you write one
+(`rendering/custom_paint.dart:222`). It hands you a canvas. Reduced motion,
+high contrast, pausing when the app goes to the background, and keeping the
+decoration out of the accessibility tree are all left to you.
+
+**Instead of the existing particle packages.** `animated_background`,
+`particle_field` and `particles_network` are genuinely animated packages, but a
+case-insensitive search of each one's `lib/` finds no `disableAnimations`, no
+`highContrast`, no `AppLifecycleState` and no `Semantics`. This package reads
+`MediaQuery.maybeDisableAnimationsOf` and holds the field still with the
+constellation on screen (`lib/constellation_particles.dart:138`), and stops the
+clock when the app is hidden (`lib/constellation_particles.dart:164`). To be
+fair about scale, all three draw under 4,000 downloads a month, so this is a
+small corner of the ecosystem.
+
+## Reach for it when
+
+- A landing or sign-in screen wants a moving background that stops when the
+  platform asks for reduced motion.
+- The background must stop spending frames once the app is backgrounded.
+- Screen readers should pass over the decoration instead of announcing it.
+
+Skip it if a still gradient or image would do the job: even with those pauses,
+this runs a simulation every frame while motion is allowed, and a static
+background costs nothing.
+
 Neighbour lookups run through a spatial hash grid: a particle's work is set by
 how crowded its own neighbourhood is rather than by how many particles exist.
 
