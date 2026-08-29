@@ -1,0 +1,16 @@
+# constellation_particles
+
+Pointer-reactive constellation particle background for Flutter. Honours reduced motion and high contrast, pauses when backgrounded, zero runtime deps.
+
+pub.dev: https://pub.dev/packages/constellation_particles
+source: https://github.com/Yusufihsangorgel/constellation_particles
+
+## Before you call it
+
+README.md carries the usage, the measured comparison against the alternatives, and a note on when not to reach for this package.
+
+## Layout
+
+- `lib/` — public API
+- `example/` — runnable examples
+- `test/` — the suite; `dart test` (or `flutter test`) runs it
