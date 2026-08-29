@@ -40,13 +40,15 @@ void main() {
   // empty chart looking like a successful run, so require the shape of the
   // tables the script is known to print before drawing anything.
   _require(
-      fixed.length == 6,
-      'expected 6 fixed-canvas rows, got '
-      '${fixed.length}. The table format changed and this parse is stale.');
+    fixed.length == 6,
+    'expected 6 fixed-canvas rows, got '
+    '${fixed.length}. The table format changed and this parse is stale.',
+  );
   _require(
-      growing.length == 4,
-      'expected 4 constant-density rows, got '
-      '${growing.length}. The table format changed and this parse is stale.');
+    growing.length == 4,
+    'expected 4 constant-density rows, got '
+    '${growing.length}. The table format changed and this parse is stale.',
+  );
   _require(
     fixed.first.pair == 1225 && fixed.last.grid == 144288,
     'the fixed-canvas check counts are not the ones this script has always '
@@ -92,8 +94,10 @@ void _quantize(String path) {
   final before = File(path).lengthSync();
   final magick = _which('magick');
   if (magick == null) {
-    stdout.writeln('wrote $path (${_kb(before)}, unquantized; '
-        'install imagemagick to shrink it)');
+    stdout.writeln(
+      'wrote $path (${_kb(before)}, unquantized; '
+      'install imagemagick to shrink it)',
+    );
     return;
   }
   final result = Process.runSync(magick, [
@@ -109,9 +113,11 @@ void _quantize(String path) {
     exit(result.exitCode);
   }
   final after = File(path).lengthSync();
-  stdout.writeln('wrote $path (${_kb(before)} -> ${_kb(after)} at '
-      '$_colours colours, ${(_width * _scale).round()}x'
-      '${(_height * _scale).round()})');
+  stdout.writeln(
+    'wrote $path (${_kb(before)} -> ${_kb(after)} at '
+    '$_colours colours, ${(_width * _scale).round()}x'
+    '${(_height * _scale).round()})',
+  );
 }
 
 String _kb(int bytes) => '${(bytes / 1024).toStringAsFixed(1)} KB';
@@ -122,10 +128,10 @@ String _kb(int bytes) => '${(bytes / 1024).toStringAsFixed(1)} KB';
 
 String _runFrameCost() {
   stdout.writeln('running example/frame_cost.dart (this takes a minute)...');
-  final result = Process.runSync(
-    Platform.resolvedExecutable,
-    ['run', 'example/frame_cost.dart'],
-  );
+  final result = Process.runSync(Platform.resolvedExecutable, [
+    'run',
+    'example/frame_cost.dart',
+  ]);
   if (result.exitCode != 0) {
     stderr.writeln(
       'frame_cost.dart exited ${result.exitCode}, so there is nothing '
@@ -137,29 +143,35 @@ String _runFrameCost() {
 }
 
 /// `n  pair-checks  grid-checks  <three timings>  links` on the fixed canvas.
-List<_Row> _parseFixedCanvas(String out) => RegExp(
-      r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
-      multiLine: true,
-    )
+List<_Row> _parseFixedCanvas(String out) =>
+    RegExp(
+          r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
+          multiLine: true,
+        )
         .allMatches(out)
-        .map((m) => _Row(
-              n: int.parse(m.group(1)!),
-              pair: int.parse(m.group(2)!),
-              grid: int.parse(m.group(3)!),
-            ))
+        .map(
+          (m) => _Row(
+            n: int.parse(m.group(1)!),
+            pair: int.parse(m.group(2)!),
+            grid: int.parse(m.group(3)!),
+          ),
+        )
         .toList();
 
 /// `n  canvas  pair-checks  grid-checks  <two timings>  links`.
-List<_Row> _parseGrowingCanvas(String out) => RegExp(
-      r'^\s*(\d+)\s+\d+x\d+\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
-      multiLine: true,
-    )
+List<_Row> _parseGrowingCanvas(String out) =>
+    RegExp(
+          r'^\s*(\d+)\s+\d+x\d+\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
+          multiLine: true,
+        )
         .allMatches(out)
-        .map((m) => _Row(
-              n: int.parse(m.group(1)!),
-              pair: int.parse(m.group(2)!),
-              grid: int.parse(m.group(3)!),
-            ))
+        .map(
+          (m) => _Row(
+            n: int.parse(m.group(1)!),
+            pair: int.parse(m.group(2)!),
+            grid: int.parse(m.group(3)!),
+          ),
+        )
         .toList();
 
 class _Row {
@@ -230,13 +242,22 @@ const _mono = "'SF Mono', Menlo, Consolas, monospace";
 
 String _buildSvg(List<_Row> fixed, List<_Row> growing) {
   final b = StringBuffer()
-    ..writeln('<svg xmlns="http://www.w3.org/2000/svg" '
-        'width="$_width" height="$_height" '
-        'viewBox="0 0 $_width $_height">')
+    ..writeln(
+      '<svg xmlns="http://www.w3.org/2000/svg" '
+      'width="$_width" height="$_height" '
+      'viewBox="0 0 $_width $_height">',
+    )
     ..writeln('<rect width="$_width" height="$_height" fill="$_bg"/>');
 
-  _text(b, 40, 52, 'What the spatial grid removes',
-      size: 27, fill: _ink, weight: '600');
+  _text(
+    b,
+    40,
+    52,
+    'What the spatial grid removes',
+    size: 27,
+    fill: _ink,
+    weight: '600',
+  );
   _text(
     b,
     40,
@@ -308,8 +329,10 @@ void _panelChart(
           (_log(_yMax) - _log(_yMin)) *
           (_plotBottom - _plotTop);
 
-  b.writeln('<rect x="$left" y="$_plotTop" width="${right - left}" '
-      'height="${_plotBottom - _plotTop}" fill="$_panel"/>');
+  b.writeln(
+    '<rect x="$left" y="$_plotTop" width="${right - left}" '
+    'height="${_plotBottom - _plotTop}" fill="$_panel"/>',
+  );
 
   _text(b, left, 142, title, size: 18, fill: _ink, weight: '600');
   _text(b, left, 164, caption, size: 13, fill: _muted);
@@ -318,10 +341,20 @@ void _panelChart(
   for (var decade = 2; decade <= 8; decade++) {
     final value = math.pow(10, decade).toDouble();
     final yy = y(value);
-    b.writeln('<line x1="$left" y1="$yy" x2="$right" y2="$yy" '
-        'stroke="$_gridLine" stroke-width="1"/>');
-    _text(b, left - 10, yy + 4, _compact(value),
-        size: 12, fill: _muted, anchor: 'end', family: _mono);
+    b.writeln(
+      '<line x1="$left" y1="$yy" x2="$right" y2="$yy" '
+      'stroke="$_gridLine" stroke-width="1"/>',
+    );
+    _text(
+      b,
+      left - 10,
+      yy + 4,
+      _compact(value),
+      size: 12,
+      fill: _muted,
+      anchor: 'end',
+      family: _mono,
+    );
   }
 
   // Series.
@@ -345,13 +378,30 @@ void _panelChart(
   // X ticks.
   for (final r in rows) {
     final xx = x(r.n);
-    b.writeln('<line x1="$xx" y1="$_plotBottom" x2="$xx" '
-        'y2="${_plotBottom + 5}" stroke="$_muted" stroke-width="1"/>');
-    _text(b, xx, _plotBottom + 22, '${r.n}',
-        size: 12, fill: _muted, anchor: 'middle', family: _mono);
+    b.writeln(
+      '<line x1="$xx" y1="$_plotBottom" x2="$xx" '
+      'y2="${_plotBottom + 5}" stroke="$_muted" stroke-width="1"/>',
+    );
+    _text(
+      b,
+      xx,
+      _plotBottom + 22,
+      '${r.n}',
+      size: 12,
+      fill: _muted,
+      anchor: 'middle',
+      family: _mono,
+    );
   }
-  _text(b, (left + right) / 2, _plotBottom + 44, 'particles',
-      size: 13, fill: _muted, anchor: 'middle');
+  _text(
+    b,
+    (left + right) / 2,
+    _plotBottom + 44,
+    'particles',
+    size: 13,
+    fill: _muted,
+    anchor: 'middle',
+  );
 }
 
 void _series(
@@ -363,28 +413,50 @@ void _series(
   String colour,
 ) {
   final points = rows
-      .map((r) => '${x(r.n).toStringAsFixed(1)},'
-          '${y(value(r)).toStringAsFixed(1)}')
+      .map(
+        (r) =>
+            '${x(r.n).toStringAsFixed(1)},'
+            '${y(value(r)).toStringAsFixed(1)}',
+      )
       .join(' ');
-  b.writeln('<polyline points="$points" fill="none" stroke="$colour" '
-      'stroke-width="2.5" stroke-linejoin="round"/>');
+  b.writeln(
+    '<polyline points="$points" fill="none" stroke="$colour" '
+    'stroke-width="2.5" stroke-linejoin="round"/>',
+  );
   for (final r in rows) {
-    b.writeln('<circle cx="${x(r.n).toStringAsFixed(1)}" '
-        'cy="${y(value(r)).toStringAsFixed(1)}" r="4" fill="$colour"/>');
+    b.writeln(
+      '<circle cx="${x(r.n).toStringAsFixed(1)}" '
+      'cy="${y(value(r)).toStringAsFixed(1)}" r="4" fill="$colour"/>',
+    );
   }
 }
 
 /// One row of the per-panel key: a sample of the line, its name, and the
 /// exponent least-squares fitted to the points actually drawn.
-void _key(StringBuffer b, double x, double y, String colour, String label,
-    double slope) {
+void _key(
+  StringBuffer b,
+  double x,
+  double y,
+  String colour,
+  String label,
+  double slope,
+) {
   b
-    ..writeln('<line x1="$x" y1="${y - 4}" x2="${x + 22}" y2="${y - 4}" '
-        'stroke="$colour" stroke-width="2.5"/>')
+    ..writeln(
+      '<line x1="$x" y1="${y - 4}" x2="${x + 22}" y2="${y - 4}" '
+      'stroke="$colour" stroke-width="2.5"/>',
+    )
     ..writeln('<circle cx="${x + 11}" cy="${y - 4}" r="3.5" fill="$colour"/>');
   _text(b, x + 32, y, label, size: 13, fill: _ink);
-  _text(b, x + 140, y, 'slope ${slope.toStringAsFixed(1)}',
-      size: 13, fill: colour, family: _mono);
+  _text(
+    b,
+    x + 140,
+    y,
+    'slope ${slope.toStringAsFixed(1)}',
+    size: 13,
+    fill: colour,
+    family: _mono,
+  );
 }
 
 void _text(
@@ -398,9 +470,11 @@ void _text(
   String weight = 'normal',
   String family = _sans,
 }) {
-  b.writeln('<text x="$x" y="$y" font-family="$family" font-size="$size" '
-      'fill="$fill" text-anchor="$anchor" font-weight="$weight">'
-      '${_escape(value)}</text>');
+  b.writeln(
+    '<text x="$x" y="$y" font-family="$family" font-size="$size" '
+    'fill="$fill" text-anchor="$anchor" font-weight="$weight">'
+    '${_escape(value)}</text>',
+  );
 }
 
 double _log(num v) => math.log(v) / math.ln10;

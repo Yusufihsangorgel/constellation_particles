@@ -83,8 +83,10 @@ void _onAFixedCanvas(IOSink out) {
     "grid's advantage is a constant factor rather than a change of shape.\n",
   );
   out.writeln('            distance checks          microseconds per pass');
-  out.writeln('       n      pair      grid       pair    grid  in place'
-      '     links');
+  out.writeln(
+    '       n      pair      grid       pair    grid  in place'
+    '     links',
+  );
 
   for (final n in [50, 100, 200, 400, 800, 1600]) {
     final field = _field(n, width, height);
@@ -99,20 +101,22 @@ void _onAFixedCanvas(IOSink out) {
       'in place': inPlace,
     });
 
-    out.writeln([
-      _count(n, 8),
-      _count(pair.checks, 10),
-      _count(gridded.checks, 10),
-      _micros(() => _everyPair(field), n: n, links: pair.links, width: 11),
-      _micros(() => _viaGrid(field, grid), n: n, links: pair.links, width: 8),
-      _micros(
-        () => _viaGridInPlace(field, grid),
-        n: n,
-        links: pair.links,
-        width: 10,
-      ),
-      _count(pair.links, 10),
-    ].join());
+    out.writeln(
+      [
+        _count(n, 8),
+        _count(pair.checks, 10),
+        _count(gridded.checks, 10),
+        _micros(() => _everyPair(field), n: n, links: pair.links, width: 11),
+        _micros(() => _viaGrid(field, grid), n: n, links: pair.links, width: 8),
+        _micros(
+          () => _viaGridInPlace(field, grid),
+          n: n,
+          links: pair.links,
+          width: 10,
+        ),
+        _count(pair.links, 10),
+      ].join(),
+    );
   }
 
   out.writeln('''
@@ -152,8 +156,10 @@ Four times the particles on twice the canvas in each direction, so the
 neighbourhood a particle sees stays about the same size.
 ''');
   out.writeln('            distance checks          microseconds per pass');
-  out.writeln('       n     canvas      pair      grid       pair'
-      '      grid     links');
+  out.writeln(
+    '       n     canvas      pair      grid       pair'
+    '      grid     links',
+  );
 
   for (final (n, width, height) in [
     (100, 1200.0, 800.0),
@@ -168,15 +174,22 @@ neighbourhood a particle sees stays about the same size.
     final gridded = _viaGrid(field, grid);
     _requireSameAnswer(n, {'every-pair': pair, 'grid': gridded});
 
-    out.writeln([
-      _count(n, 8),
-      '${width.toInt()}x${height.toInt()}'.padLeft(11),
-      _count(pair.checks, 10),
-      _count(gridded.checks, 10),
-      _micros(() => _everyPair(field), n: n, links: pair.links, width: 11),
-      _micros(() => _viaGrid(field, grid), n: n, links: pair.links, width: 10),
-      _count(pair.links, 10),
-    ].join());
+    out.writeln(
+      [
+        _count(n, 8),
+        '${width.toInt()}x${height.toInt()}'.padLeft(11),
+        _count(pair.checks, 10),
+        _count(gridded.checks, 10),
+        _micros(() => _everyPair(field), n: n, links: pair.links, width: 11),
+        _micros(
+          () => _viaGrid(field, grid),
+          n: n,
+          links: pair.links,
+          width: 10,
+        ),
+        _count(pair.links, 10),
+      ].join(),
+    );
   }
 
   out.writeln('''
@@ -212,11 +225,15 @@ void _theCellSizeIsNotArbitrary(IOSink out) {
   final correct = _viaGrid(field, _SpatialGrid(_connectionDistance));
   final tooSmall = _viaGrid(field, _SpatialGrid(_connectionDistance / 2));
 
-  out.writeln('\nWHY THE CELL SIZE IS THE CONNECTION DISTANCE, '
-      'AT $n PARTICLES\n');
+  out.writeln(
+    '\nWHY THE CELL SIZE IS THE CONNECTION DISTANCE, '
+    'AT $n PARTICLES\n',
+  );
   void row(String label, ({int links, int checks}) pass) {
-    out.writeln('  ${label.padRight(36)}'
-        '${pass.checks} checks, ${pass.links} links');
+    out.writeln(
+      '  ${label.padRight(36)}'
+      '${pass.checks} checks, ${pass.links} links',
+    );
   }
 
   row('cell ${_connectionDistance.toInt()}, the connection distance', correct);

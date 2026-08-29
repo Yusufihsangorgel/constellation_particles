@@ -70,7 +70,8 @@ void main() {
     expect(_isAnimating, isFalse);
     expect(
       find.text(
-          'your system already asks for it; the field is held either way'),
+        'your system already asks for it; the field is held either way',
+      ),
       findsOneWidget,
     );
   });

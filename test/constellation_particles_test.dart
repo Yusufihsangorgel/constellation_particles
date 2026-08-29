@@ -3,14 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:constellation_particles/constellation_particles.dart';
 
 Widget _boxed(Widget child, {Size size = const Size(400, 300)}) => MaterialApp(
-      home: Center(
-        child: SizedBox(width: size.width, height: size.height, child: child),
-      ),
-    );
+  home: Center(
+    child: SizedBox(width: size.width, height: size.height, child: child),
+  ),
+);
 
 void main() {
-  testWidgets('renders a CustomPaint and advances without error',
-      (tester) async {
+  testWidgets('renders a CustomPaint and advances without error', (
+    tester,
+  ) async {
     await tester.pumpWidget(_boxed(const ConstellationParticles()));
     expect(find.byType(ConstellationParticles), findsOneWidget);
     expect(find.byType(CustomPaint), findsWidgets);
@@ -22,18 +23,21 @@ void main() {
   });
 
   testWidgets('handles an empty field', (tester) async {
-    await tester
-        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 0)));
+    await tester.pumpWidget(
+      _boxed(const ConstellationParticles(particleCount: 0)),
+    );
     await tester.pump(const Duration(milliseconds: 16));
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('rebuilds when the particle count changes', (tester) async {
-    await tester
-        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 40)));
+    await tester.pumpWidget(
+      _boxed(const ConstellationParticles(particleCount: 40)),
+    );
     await tester.pump(const Duration(milliseconds: 16));
-    await tester
-        .pumpWidget(_boxed(const ConstellationParticles(particleCount: 120)));
+    await tester.pumpWidget(
+      _boxed(const ConstellationParticles(particleCount: 120)),
+    );
     await tester.pump(const Duration(milliseconds: 16));
     expect(tester.takeException(), isNull);
   });
@@ -49,7 +53,9 @@ void main() {
     // `Infinity or NaN toInt` out of both the ticker and paint() — once per
     // frame, for as long as the widget stayed alive.
     expect(
-        () => ConstellationParticles(speed: double.nan), throwsAssertionError);
+      () => ConstellationParticles(speed: double.nan),
+      throwsAssertionError,
+    );
     expect(
       () => ConstellationParticles(repulsionRadius: double.nan),
       throwsAssertionError,

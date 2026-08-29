@@ -147,14 +147,23 @@ const _mono = "'SF Mono', Menlo, Consolas, monospace";
 
 String _buildSvg(Map<String, Uint8List> panels) {
   final b = StringBuffer()
-    ..writeln('<svg xmlns="http://www.w3.org/2000/svg" '
-        'xmlns:xlink="http://www.w3.org/1999/xlink" '
-        'width="$_width" height="$_height" '
-        'viewBox="0 0 $_width $_height">')
+    ..writeln(
+      '<svg xmlns="http://www.w3.org/2000/svg" '
+      'xmlns:xlink="http://www.w3.org/1999/xlink" '
+      'width="$_width" height="$_height" '
+      'viewBox="0 0 $_width $_height">',
+    )
     ..writeln('<rect width="$_width" height="$_height" fill="#0A0E14"/>');
 
-  _text(b, 36, 50, 'Two parameters, one field',
-      size: 27, fill: _ink, weight: '600');
+  _text(
+    b,
+    36,
+    50,
+    'Two parameters, one field',
+    size: 27,
+    fill: _ink,
+    weight: '600',
+  );
   _text(
     b,
     36,
@@ -167,25 +176,54 @@ String _buildSvg(Map<String, Uint8List> panels) {
 
   for (var col = 0; col < _distances.length; col++) {
     final x = _gridLeft + col * (_panel + _gutter) + _panel / 2;
-    _text(b, x, 116, 'connectionDistance: ${_distances[col].toInt()}',
-        size: 15, fill: _teal, anchor: 'middle', family: _mono);
+    _text(
+      b,
+      x,
+      116,
+      'connectionDistance: ${_distances[col].toInt()}',
+      size: 15,
+      fill: _teal,
+      anchor: 'middle',
+      family: _mono,
+    );
   }
 
   for (var row = 0; row < _counts.length; row++) {
     final y = _gridTop + row * (_panel + _gutter);
-    _text(b, _rowLabelRight, y + _panel / 2 - 6, 'particleCount',
-        size: 13, fill: _muted, anchor: 'end', family: _mono);
-    _text(b, _rowLabelRight, y + _panel / 2 + 14, '${_counts[row]}',
-        size: 19, fill: _teal, anchor: 'end', family: _mono, weight: '600');
+    _text(
+      b,
+      _rowLabelRight,
+      y + _panel / 2 - 6,
+      'particleCount',
+      size: 13,
+      fill: _muted,
+      anchor: 'end',
+      family: _mono,
+    );
+    _text(
+      b,
+      _rowLabelRight,
+      y + _panel / 2 + 14,
+      '${_counts[row]}',
+      size: 19,
+      fill: _teal,
+      anchor: 'end',
+      family: _mono,
+      weight: '600',
+    );
 
     for (var col = 0; col < _distances.length; col++) {
       final x = _gridLeft + col * (_panel + _gutter);
       final png = panels['${_counts[row]}/${_distances[col]}']!;
       b
-        ..writeln('<image x="$x" y="$y" width="$_panel" height="$_panel" '
-            'xlink:href="data:image/png;base64,${base64Encode(png)}"/>')
-        ..writeln('<rect x="$x" y="$y" width="$_panel" height="$_panel" '
-            'fill="none" stroke="#1B2635" stroke-width="1"/>');
+        ..writeln(
+          '<image x="$x" y="$y" width="$_panel" height="$_panel" '
+          'xlink:href="data:image/png;base64,${base64Encode(png)}"/>',
+        )
+        ..writeln(
+          '<rect x="$x" y="$y" width="$_panel" height="$_panel" '
+          'fill="none" stroke="#1B2635" stroke-width="1"/>',
+        );
     }
   }
 
@@ -231,9 +269,11 @@ String _buildSvg(Map<String, Uint8List> panels) {
 void _rasterize() {
   final rsvg = _which('rsvg-convert');
   if (rsvg == null) {
-    stdout.writeln('rsvg-convert not on PATH; to rasterize:\n'
-        '  rsvg-convert -w $_outputWidth doc/params.svg -o /tmp/params.png\n'
-        '  cwebp -q $_quality -m 6 /tmp/params.png -o doc/params.webp');
+    stdout.writeln(
+      'rsvg-convert not on PATH; to rasterize:\n'
+      '  rsvg-convert -w $_outputWidth doc/params.svg -o /tmp/params.png\n'
+      '  cwebp -q $_quality -m 6 /tmp/params.png -o doc/params.webp',
+    );
     return;
   }
   final png = File('${Directory.systemTemp.path}/params_render.png');
@@ -241,8 +281,10 @@ void _rasterize() {
 
   final cwebp = _which('cwebp');
   if (cwebp == null) {
-    stdout.writeln('cwebp not on PATH (`brew install webp`); rendered PNG '
-        'left at ${png.path}');
+    stdout.writeln(
+      'cwebp not on PATH (`brew install webp`); rendered PNG '
+      'left at ${png.path}',
+    );
     return;
   }
   _run(cwebp, [
@@ -253,14 +295,16 @@ void _rasterize() {
     '6',
     png.path,
     '-o',
-    'doc/params.webp'
+    'doc/params.webp',
   ]);
 
   final before = png.lengthSync();
   final after = File('doc/params.webp').lengthSync();
   png.deleteSync();
-  stdout.writeln('wrote doc/params.webp (${_kb(before)} PNG -> ${_kb(after)} '
-      'WebP q$_quality, ${_outputWidth}px wide)');
+  stdout.writeln(
+    'wrote doc/params.webp (${_kb(before)} PNG -> ${_kb(after)} '
+    'WebP q$_quality, ${_outputWidth}px wide)',
+  );
 }
 
 const _quality = 80;
@@ -292,7 +336,9 @@ void _text(
   String weight = 'normal',
   String family = _sans,
 }) {
-  b.writeln('<text x="$x" y="$y" font-family="$family" font-size="$size" '
-      'fill="$fill" text-anchor="$anchor" font-weight="$weight">'
-      '${value.replaceAll('&', '&amp;').replaceAll('<', '&lt;')}</text>');
+  b.writeln(
+    '<text x="$x" y="$y" font-family="$family" font-size="$size" '
+    'fill="$fill" text-anchor="$anchor" font-weight="$weight">'
+    '${value.replaceAll('&', '&amp;').replaceAll('<', '&lt;')}</text>',
+  );
 }
