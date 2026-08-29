@@ -53,8 +53,8 @@ class _FieldPageState extends State<FieldPage> {
             // would hold the switch's own thumb still as well, and the control
             // you are experimenting with would stop responding to you.
             child: MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(disableAnimations: holdStill),
+              data:
+                  MediaQuery.of(context).copyWith(disableAnimations: holdStill),
               child: const ConstellationParticles(
                 particleCount: 140,
                 color: Color(0xFF64FFDA),
@@ -68,7 +68,9 @@ class _FieldPageState extends State<FieldPage> {
                   ? 'the drift stopped, the field stayed'
                   : 'move your cursor',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
                   ?.copyWith(color: Colors.white24, letterSpacing: 2),
             ),
           ),

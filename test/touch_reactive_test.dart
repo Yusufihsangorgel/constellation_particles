@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:constellation_particles/constellation_particles.dart';
 
 Widget _boxed(Widget child, {Size size = const Size(400, 300)}) => MaterialApp(
-  home: Center(
-    child: SizedBox(width: size.width, height: size.height, child: child),
-  ),
-);
+      home: Center(
+        child: SizedBox(width: size.width, height: size.height, child: child),
+      ),
+    );
 
 // The State type is private, so reach the getter through dynamic dispatch.
 bool _pointerInside(WidgetTester tester) {

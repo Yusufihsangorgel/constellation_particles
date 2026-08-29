@@ -4,16 +4,16 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _host({required bool disableAnimations}) => MediaQuery(
-  data: MediaQueryData(disableAnimations: disableAnimations),
-  child: const Directionality(
-    textDirection: TextDirection.ltr,
-    child: SizedBox(
-      width: 300,
-      height: 300,
-      child: ConstellationParticles(particleCount: 30, seed: 7),
-    ),
-  ),
-);
+      data: MediaQueryData(disableAnimations: disableAnimations),
+      child: const Directionality(
+        textDirection: TextDirection.ltr,
+        child: SizedBox(
+          width: 300,
+          height: 300,
+          child: ConstellationParticles(particleCount: 30, seed: 7),
+        ),
+      ),
+    );
 
 /// Whether anything is still driving frames. A running particle simulation
 /// keeps a ticker scheduled; a held one does not.

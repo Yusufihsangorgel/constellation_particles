@@ -143,11 +143,10 @@ String _runFrameCost() {
 }
 
 /// `n  pair-checks  grid-checks  <three timings>  links` on the fixed canvas.
-List<_Row> _parseFixedCanvas(String out) =>
-    RegExp(
-          r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
-          multiLine: true,
-        )
+List<_Row> _parseFixedCanvas(String out) => RegExp(
+      r'^\s*(\d+)\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
+      multiLine: true,
+    )
         .allMatches(out)
         .map(
           (m) => _Row(
@@ -159,11 +158,10 @@ List<_Row> _parseFixedCanvas(String out) =>
         .toList();
 
 /// `n  canvas  pair-checks  grid-checks  <two timings>  links`.
-List<_Row> _parseGrowingCanvas(String out) =>
-    RegExp(
-          r'^\s*(\d+)\s+\d+x\d+\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
-          multiLine: true,
-        )
+List<_Row> _parseGrowingCanvas(String out) => RegExp(
+      r'^\s*(\d+)\s+\d+x\d+\s+(\d+)\s+(\d+)\s+[\d.]+\s+[\d.]+\s+(\d+)\s*$',
+      multiLine: true,
+    )
         .allMatches(out)
         .map(
           (m) => _Row(
@@ -414,8 +412,7 @@ void _series(
 ) {
   final points = rows
       .map(
-        (r) =>
-            '${x(r.n).toStringAsFixed(1)},'
+        (r) => '${x(r.n).toStringAsFixed(1)},'
             '${y(value(r)).toStringAsFixed(1)}',
       )
       .join(' ');
