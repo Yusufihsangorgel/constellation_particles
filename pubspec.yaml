@@ -7,11 +7,11 @@ version: 1.1.0
 repository: https://github.com/Yusufihsangorgel/constellation_particles
 issue_tracker: https://github.com/Yusufihsangorgel/constellation_particles/issues
 topics:
-  - animation
   - particles
-  - canvas
-  - background
-  - custompainter
+  - particle-background
+  - constellation
+  - reduced-motion
+  - high-contrast
 
 # The card thumbnail comes from the first entry and is fitted, rather than
 # cropped, into 190x190: a wide or tall image becomes an unreadable strip
