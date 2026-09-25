@@ -19,14 +19,19 @@ Future<Uint8List> _fieldPixels(WidgetTester tester) async {
       matching: find.byType(RepaintBoundary),
     ),
   );
-  final image = await boundary.toImage();
-  final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-  final rgba = data!.buffer.asUint8List(
-    data.offsetInBytes,
-    data.lengthInBytes,
-  );
-  image.dispose();
-  return Uint8List.fromList(rgba);
+  // Image work needs the real event loop; inside the fake async zone of a
+  // widget test these futures never complete.
+  final pixels = await tester.runAsync(() async {
+    final image = await boundary.toImage();
+    final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final rgba = data!.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
+    image.dispose();
+    return Uint8List.fromList(rgba);
+  });
+  return pixels!;
 }
 
 void main() {

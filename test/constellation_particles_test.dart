@@ -38,14 +38,19 @@ Future<Uint8List> _fieldPixels(
     ),
   );
   expect(boundary.size, expectedSize);
-  final image = await boundary.toImage();
-  final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-  final rgba = data!.buffer.asUint8List(
-    data.offsetInBytes,
-    data.lengthInBytes,
-  );
-  image.dispose();
-  return Uint8List.fromList(rgba);
+  // Image work needs the real event loop; inside the fake async zone of a
+  // widget test these futures never complete.
+  final pixels = await tester.runAsync(() async {
+    final image = await boundary.toImage();
+    final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final rgba = data!.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
+    image.dispose();
+    return Uint8List.fromList(rgba);
+  });
+  return pixels!;
 }
 
 class _ReferenceParticle {
@@ -266,13 +271,15 @@ void main() {
     );
     await tester.pump();
 
-    final expected = await _allPairsReference(
-      size: size,
-      count: count,
-      connectionDistance: 120,
-      seed: seed,
-      color: color,
-    );
+    final expected = (await tester.runAsync(
+      () => _allPairsReference(
+        size: size,
+        count: count,
+        connectionDistance: 120,
+        seed: seed,
+        color: color,
+      ),
+    ))!;
     expect(expected.lineCount, greaterThan(0));
     expect(
       await _fieldPixels(tester, expectedSize: size),
@@ -306,13 +313,15 @@ void main() {
     );
     await tester.pump();
 
-    final expected = await _allPairsReference(
-      size: size,
-      count: count,
-      connectionDistance: 120,
-      seed: 19,
-      color: color,
-    );
+    final expected = (await tester.runAsync(
+      () => _allPairsReference(
+        size: size,
+        count: count,
+        connectionDistance: 120,
+        seed: 19,
+        color: color,
+      ),
+    ))!;
     final afterSeedChange = await _fieldPixels(tester, expectedSize: size);
     expect(afterSeedChange, orderedEquals(expected.pixels));
     expect(afterSeedChange, isNot(equals(beforeSeedChange)));
