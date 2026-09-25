@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "package": "constellation_particles",
+  "survey_digest": "f90f45c8a172068c3ed3b9488ba5a7cb4e58efa93c380d2d9a70b399349ec35e",
+  "items": [
+    {
+      "id": "constellation_particles-D001",
+      "source_index": 1,
+      "source_item_digest": "cfd2224742b64e1f271b32b5a925114803ac0b9497da049e555f5f08dd416e7c",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "93,115,147-153,316-318"
+        }
+      ],
+      "kind": "bug / untested behavior",
+      "observation": "_grid is `late final` and built with the initial connectionDistance value; didUpdateWidget looks only at particleCount. If connectionDistance grows at runtime the cells stay smaller than the link distance: particle pairs two cells apart are no longer found, while the painter uses the new distance, and lines come out missing. A seed change also does not reposition the particles. No test changes these parameters at runtime.",
+      "certainty": "probable",
+      "proposed_fix": "In didUpdateWidget rebuild the grid when connectionDistance changes (drop the late final); restart the particles when seed changes. Test: increase the distance and compare the drawn line count against an all-pairs reference (red first).",
+      "related_rule_ids": [
+        "constellation_particles/CP-03",
+        "constellation_particles/CP-08"
+      ],
+      "issue_url": null,
+      "closure_criteria": "didUpdateWidget rebuilds the spatial grid when connectionDistance changes and restarts the particles when seed changes. A test that increases the distance at runtime matches the all-pairs reference line count.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D002",
+      "source_index": 2,
+      "source_item_digest": "5026163612bc74765cfac5b76d6f442b7abc38c8a3e51c00486aa370bb0c8471",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "366-370"
+        }
+      ],
+      "kind": "global mutable state",
+      "observation": "The static Paint objects and the static glow cache (_cachedGlowColor, _cachedGlowStops) in _ConstellationPainter are shared across all instances. If two regions of different color are on screen the cache is recomputed every frame.",
+      "certainty": "confirmed",
+      "proposed_fix": "Move the Paint objects and the cache onto the state instance and pass them to the painter as parameters. There must still be no per-frame allocation.",
+      "related_rule_ids": [
+        "constellation_particles/CP-09"
+      ],
+      "issue_url": null,
+      "closure_criteria": "The Paint objects and the glow cache live on the state instance and reach the painter as parameters, with no per-frame allocation.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D003",
+      "source_index": 3,
+      "source_item_digest": "bd1de8315a08b217beea91567f540bedf0bcac1f9368d8cdc1ba86fb707eb2ee",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "medium",
+      "locations": [
+        {
+          "path": "example/frame_cost.dart",
+          "lines": "31,537-567"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "lines": null
+        }
+      ],
+      "kind": "duplicate logic / check measuring the wrong target",
+      "observation": "The script carries a copy of _SpatialGrid (its doc says 'identical to the one in lib'). The all-pairs/grid agreement check in CI measures this copy, not the class shipped with the package. If the grid in lib changes, the check silently goes stale.",
+      "certainty": "confirmed",
+      "proposed_fix": "Move the grid into lib/src/spatial_grid.dart, free of any Flutter dependency (without exporting it). Let both lib and the script import it and delete the copy. This means splitting the file; it must follow CP-01.",
+      "related_rule_ids": [
+        "constellation_particles/CP-01",
+        "constellation_particles/CP-03"
+      ],
+      "issue_url": null,
+      "closure_criteria": "One grid implementation in lib/src/spatial_grid.dart serves both the widget and example/frame_cost.dart, and the copied _SpatialGrid is deleted. The CI all-pairs agreement check runs against the shipped grid.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D004",
+      "source_index": 4,
+      "source_item_digest": "882dc08a148be913bed5c83da680389e0ac9eee7974d7af9438073c82e07b3ff",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "323-327,333-344"
+        }
+      ],
+      "kind": "duplicate constant / undocumented assumption",
+      "observation": "The 100000 multiplier in the cell key is written as a literal in two places. getNearby does not use the _key function. The assumption that the key stays collision-free only while cy < 100000 is not written anywhere.",
+      "certainty": "confirmed",
+      "proposed_fix": "A single _keyOf(cx, cy) function, a named constant, and a one-line doc stating the assumption.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "A single _keyOf helper with a named 100000 constant serves both key sites and getNearby. A one-line doc states the collision assumption below cy 100000.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D005",
+      "source_index": 5,
+      "source_item_digest": "adfd0f400b7d21abc7d0fde603ccde1b2eeea1ad7a0590ef23c505f576e0d48a",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "184-187,223-224,376-379,395,404,410-416"
+        }
+      ],
+      "kind": "unnamed tuning constants (J5)",
+      "observation": "The initial speed 0.4, the push multiplier 0.02, the opacities (0.6, 0.08, 0.15, 0.05), the line width 0.5, the glow threshold 1.2 and the ×4 multiplier are bare literals.",
+      "certainty": "confirmed",
+      "proposed_fix": "Define private _k constants with a one-line meaning note for each. Behavior does not change.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "Each listed literal becomes a private _k constant with a one-line meaning note. The visible behavior is unchanged.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D006",
+      "source_index": 6,
+      "source_item_digest": "8326e6611e7dd166c10bce17e658632a42bdd3cacf6a7b78d425e88f6ccf270c",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "medium",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "116-119,201-227"
+        }
+      ],
+      "kind": "frame-rate dependent physics (potential)",
+      "observation": "Motion advances per frame, not by elapsed time. Drift on a 120 Hz screen is therefore twice as fast as on 60 Hz. AnimationController is used only as a frame clock; the 1 second duration value carries no meaning.",
+      "certainty": "probable",
+      "proposed_fix": "Derive dt from the ticker elapsed time and calibrate to 60 fps; test with fake time. The visible behavior changes and a minor release plus a CHANGELOG entry are required.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "Motion advances by dt derived from the ticker elapsed time, calibrated to 60 fps, and a fake-time test covers it. A minor release and a CHANGELOG entry ship the change.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D007",
+      "source_index": 7,
+      "source_item_digest": "b34906974aadd17a1c75298547330f600be4ac3cb79d2e1da46c5cd3f76ae69b",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "106-109"
+        },
+        {
+          "path": "test/touch_reactive_test.dart",
+          "lines": "11-15"
+        }
+      ],
+      "kind": "hook leaked into lib for tests",
+      "observation": "A getter marked @visibleForTesting was added to the private State; the test reaches it through dynamic and this loses type checking.",
+      "certainty": "confirmed",
+      "proposed_fix": "Tie the test to observable output (particle positions or the painted result) and remove the getter.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "The @visibleForTesting getter is gone and test/touch_reactive_test.dart asserts on observable output such as particle positions or the painted result.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D008",
+      "source_index": 8,
+      "source_item_digest": "84d61c78428da6a6632ab62bac818a217d59e8cba2297d765e7613d55fc099d1",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "21"
+        }
+      ],
+      "kind": "undocumented public member (D2)",
+      "observation": "The public constructor has no `///` doc.",
+      "certainty": "confirmed",
+      "proposed_fix": "Add a one-sentence doc.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "The public constructor carries a one-sentence /// doc.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D009",
+      "source_index": 9,
+      "source_item_digest": "37569416e02d59ac0a4a4ddd0e58a313819a534d33bec89cecde014d2f55f90d",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": "lib/constellation_particles.dart",
+          "lines": "4,404"
+        }
+      ],
+      "kind": "unnecessary dependency surface",
+      "observation": "material.dart is imported only for Colors.transparent.",
+      "certainty": "confirmed",
+      "proposed_fix": "Use Color(0x00000000) and lower the import to widgets.dart.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "Colors.transparent is replaced by Color(0x00000000) and the import drops to widgets.dart.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    },
+    {
+      "id": "constellation_particles-D010",
+      "source_index": 10,
+      "source_item_digest": "577f58bfd0a60655847cd8b759ffc02175c82fbe0083b40b974cfd0772f79973",
+      "baseline_revision": "9b7c619",
+      "status": "open",
+      "size": "small",
+      "locations": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "lines": null
+        },
+        {
+          "path": "AGENTS.md",
+          "lines": null
+        }
+      ],
+      "kind": "CI coverage gap",
+      "observation": "The 4 cases in example/test/hold_still_test.dart do not run in CI, while AGENTS.md says 'cd example && flutter test'. The base flutter >=3.24.0 is not tested either.",
+      "certainty": "confirmed",
+      "proposed_fix": "Add a test step for example and put 3.24.0 in the matrix.",
+      "related_rule_ids": [],
+      "issue_url": null,
+      "closure_criteria": "CI runs the example tests including hold_still_test.dart and lists Flutter 3.24.0 in the matrix.",
+      "review_trigger": "Before modifying the affected code",
+      "resolution": null
+    }
+  ]
+}
