@@ -1,3 +1,11 @@
+## Unreleased
+
+- Changing `connectionDistance` at runtime rebuilds the spatial grid. Before,
+  pairs two cells apart were missed once the distance grew.
+- Changing `seed` at runtime reinitializes the particles.
+- Paints and the glow cache belong to each field. Two fields with different
+  colors no longer rebuild a shared cache on every frame.
+
 ## 1.1.0
 
 - The README now answers, in its first screen, why to reach for this rather

@@ -15,18 +15,32 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: [stable, minimum]
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+        if: matrix.sdk == 'stable'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+        if: matrix.sdk == 'minimum'
+      - name: Use Flutter 3.24 compatible analysis lints
+        run: |
+          cat > pubspec_overrides.yaml <<'EOF'
+          dependency_overrides:
+            flutter_lints: 5.0.0
+          EOF
+        if: matrix.sdk == 'minimum'
       - run: flutter pub get
       - run: dart analyze --fatal-infos
       - run: dart format --output=none --set-exit-if-changed .
+        if: matrix.sdk == 'stable'
       - run: flutter test
-
-      # example/README.md quotes this script's tables, so run it. It is a real
-      # check rather than a smoke test: the script exits non-zero if the
-      # every-pair and grid passes stop agreeing on how many lines they drew,
-      # which is what halving the grid's cell size does.
+      - run: flutter pub get && flutter test
+        working-directory: example
       - run: dart run example/frame_cost.dart

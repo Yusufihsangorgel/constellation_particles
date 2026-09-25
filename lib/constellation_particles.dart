@@ -1,7 +1,22 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+const _kGridKeyStride = 100000; // Stored y-cell indices must stay below this.
+const _kInitialVelocityScale = 0.4; // Maximum initial drift on either axis.
+const _kPointerRepulsionScale = 0.02; // Scales pointer force to gentle motion.
+const _kParticleOpacity = 0.6; // Base opacity for each particle.
+const _kLineBaseOpacity = 0.08; // Base opacity for connecting lines.
+const _kLineOpacityScale = 0.15; // Maximum opacity before distance fading.
+const _kLineStrokeWidth = 0.5; // Connection line width in logical pixels.
+const _kGlowRadiusThreshold = 1.2; // Radius above which a particle glows.
+const _kGlowRadiusScale = 4.0; // Glow radius relative to the particle radius.
+const _kGlowOpacity = 0.05; // Opacity at the centre of each glow.
+
+// withValues was added after Flutter 3.24, which this package supports.
+// ignore: deprecated_member_use
+Color _withOpacity(Color color, double opacity) => color.withOpacity(opacity);
 
 /// A pointer-reactive constellation particle field.
 ///
@@ -18,6 +33,7 @@ import 'package:flutter/material.dart';
 /// It pauses its ticker when the app is backgrounded and halves the particle
 /// count when the platform requests high contrast.
 class ConstellationParticles extends StatefulWidget {
+  /// Creates a decorative, pointer-reactive particle field.
   const ConstellationParticles({
     super.key,
     this.particleCount = 100,
@@ -90,8 +106,13 @@ class ConstellationParticles extends StatefulWidget {
 class _ConstellationParticlesState extends State<ConstellationParticles>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
-  late final _SpatialGrid _grid;
+  late _SpatialGrid _grid;
   List<_Particle> _particles = const [];
+  final Paint _linePaint = Paint()..style = PaintingStyle.stroke;
+  final Paint _particlePaint = Paint();
+  final Paint _glowPaint = Paint();
+  Color? _cachedGlowColor;
+  List<Color>? _cachedGlowStops;
   Offset _mousePos = Offset.zero;
   bool _mouseInside = false;
   Size _lastSize = Size.zero;
@@ -102,11 +123,6 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   /// Whether the platform asked for reduced motion, in which case the
   /// simulation is held still.
   bool _reduceMotion = false;
-
-  /// Whether the pointer is currently over the field and driving repulsion.
-  /// Exposed for tests that assert touch reactivity engaged.
-  @visibleForTesting
-  bool get isPointerInside => _mouseInside;
 
   @override
   void initState() {
@@ -147,8 +163,17 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
   @override
   void didUpdateWidget(ConstellationParticles old) {
     super.didUpdateWidget(old);
-    if (old.particleCount != widget.particleCount && !_lastSize.isEmpty) {
+
+    if (old.connectionDistance != widget.connectionDistance) {
+      _grid = _SpatialGrid(widget.connectionDistance);
+    }
+
+    if ((old.particleCount != widget.particleCount ||
+            old.seed != widget.seed) &&
+        !_lastSize.isEmpty) {
       _initParticles(_lastSize);
+    } else if (old.connectionDistance != widget.connectionDistance) {
+      _rebuildGrid();
     }
   }
 
@@ -181,21 +206,33 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
       (_) => _Particle(
         x: rng.nextDouble() * size.width,
         y: rng.nextDouble() * size.height,
-        vx: (rng.nextDouble() - 0.5) * 0.4,
-        vy: (rng.nextDouble() - 0.5) * 0.4,
+        vx: (rng.nextDouble() - 0.5) * _kInitialVelocityScale,
+        vy: (rng.nextDouble() - 0.5) * _kInitialVelocityScale,
         radius: rng.nextDouble() * 1.5 + 0.5,
         opacity: rng.nextDouble() * 0.4 + 0.1,
       ),
     );
     _lastSize = size;
 
-    // The grid still holds indices sized for the previous population. When
-    // this one is shorter, because particleCount dropped at runtime or
-    // high contrast just halved the count, a stale index would be out of
-    // range the moment the painter runs, before the next tick rebuilds the
-    // grid. Clearing it here means that one frame paints with no connecting
-    // lines instead of throwing.
+    _rebuildGrid();
+  }
+
+  void _rebuildGrid() {
     _grid.clear();
+    for (var i = 0; i < _particles.length; i++) {
+      _grid.insert(i, _particles[i].x, _particles[i].y);
+    }
+  }
+
+  List<Color> _glowStopsFor(Color color) {
+    if (_cachedGlowColor != color) {
+      _cachedGlowColor = color;
+      _cachedGlowStops = [
+        _withOpacity(color, _kGlowOpacity),
+        const Color(0x00000000),
+      ];
+    }
+    return _cachedGlowStops!;
   }
 
   void _tick() {
@@ -220,18 +257,21 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
         if (dist < radius && dist > 0) {
           final force = (radius - dist) / radius;
           p
-            ..x += (dx / dist) * force * widget.repulsionForce * 0.02
-            ..y += (dy / dist) * force * widget.repulsionForce * 0.02;
+            ..x += (dx / dist) *
+                force *
+                widget.repulsionForce *
+                _kPointerRepulsionScale
+            ..y += (dy / dist) *
+                force *
+                widget.repulsionForce *
+                _kPointerRepulsionScale;
         }
       }
     }
 
     // Rebuild the spatial grid once per frame; particles land in the cell
     // matching their position so neighbour queries only scan 9 cells.
-    _grid.clear();
-    for (var i = 0; i < _particles.length; i++) {
-      _grid.insert(i, _particles[i].x, _particles[i].y);
-    }
+    _rebuildGrid();
 
     _generation++;
   }
@@ -265,6 +305,10 @@ class _ConstellationParticlesState extends State<ConstellationParticles>
                   connectionDistance: widget.connectionDistance,
                   generation: _generation,
                   grid: _grid,
+                  linePaint: _linePaint,
+                  particlePaint: _particlePaint,
+                  glowPaint: _glowPaint,
+                  glowStops: _glowStopsFor(widget.color),
                 ),
               ),
             );
@@ -320,10 +364,13 @@ class _SpatialGrid {
 
   void clear() => _cells.clear();
 
+  /// Stored y cells stay nonnegative and below [_kGridKeyStride].
+  int _keyOf(int cx, int cy) => cx * _kGridKeyStride + cy;
+
   int _key(double x, double y) {
     final cx = (x / cellSize).floor();
     final cy = (y / cellSize).floor();
-    return cx * 100000 + cy;
+    return _keyOf(cx, cy);
   }
 
   void insert(int index, double x, double y) {
@@ -336,7 +383,7 @@ class _SpatialGrid {
     final result = <int>[];
     for (var dx = -1; dx <= 1; dx++) {
       for (var dy = -1; dy <= 1; dy++) {
-        final cell = _cells[(cx + dx) * 100000 + (cy + dy)];
+        final cell = _cells[_keyOf(cx + dx, cy + dy)];
         if (cell != null) result.addAll(cell);
       }
     }
@@ -355,6 +402,10 @@ class _ConstellationPainter extends CustomPainter {
     required this.connectionDistance,
     required this.generation,
     required this.grid,
+    required this.linePaint,
+    required this.particlePaint,
+    required this.glowPaint,
+    required this.glowStops,
   });
 
   final List<_Particle> particles;
@@ -362,21 +413,19 @@ class _ConstellationPainter extends CustomPainter {
   final double connectionDistance;
   final int generation;
   final _SpatialGrid grid;
-
-  static final _linePaint = Paint()..style = PaintingStyle.stroke;
-  static final _particlePaint = Paint();
-  static final _glowPaint = Paint();
-  static Color? _cachedGlowColor;
-  static List<Color>? _cachedGlowStops;
+  final Paint linePaint;
+  final Paint particlePaint;
+  final Paint glowPaint;
+  final List<Color> glowStops;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty) return;
 
-    final particleColor = color.withValues(alpha: 0.6);
-    final lineColor = color.withValues(alpha: 0.08);
+    final particleColor = _withOpacity(color, _kParticleOpacity);
+    final lineColor = _withOpacity(color, _kLineBaseOpacity);
     final distSqThreshold = connectionDistance * connectionDistance;
-    _linePaint.strokeWidth = 0.5;
+    linePaint.strokeWidth = _kLineStrokeWidth;
 
     // Connecting lines, resolved through the grid so we only test near pairs.
     for (var i = 0; i < particles.length; i++) {
@@ -392,35 +441,39 @@ class _ConstellationPainter extends CustomPainter {
         final distSq = dx * dx + dy * dy;
         if (distSq < distSqThreshold) {
           final dist = math.sqrt(distSq);
-          final opacity = (1.0 - dist / connectionDistance) * 0.15;
-          _linePaint.color = lineColor.withValues(alpha: opacity);
-          canvas.drawLine(Offset(pi.x, pi.y), Offset(pj.x, pj.y), _linePaint);
+          final opacity =
+              (1.0 - dist / connectionDistance) * _kLineOpacityScale;
+          linePaint.color = _withOpacity(lineColor, opacity);
+          canvas.drawLine(Offset(pi.x, pi.y), Offset(pj.x, pj.y), linePaint);
         }
       }
     }
 
-    if (_cachedGlowColor != color) {
-      _cachedGlowColor = color;
-      _cachedGlowStops = [color.withValues(alpha: 0.05), Colors.transparent];
-    }
-
     for (final p in particles) {
-      _particlePaint.color = particleColor.withValues(alpha: p.opacity);
-      canvas.drawCircle(Offset(p.x, p.y), p.radius, _particlePaint);
-      if (p.radius > 1.2) {
-        _glowPaint.shader = ui.Gradient.radial(
+      particlePaint.color = _withOpacity(particleColor, p.opacity);
+      canvas.drawCircle(Offset(p.x, p.y), p.radius, particlePaint);
+      if (p.radius > _kGlowRadiusThreshold) {
+        glowPaint.shader = ui.Gradient.radial(
           Offset(p.x, p.y),
-          p.radius * 4,
-          _cachedGlowStops!,
+          p.radius * _kGlowRadiusScale,
+          glowStops,
         );
-        canvas.drawCircle(Offset(p.x, p.y), p.radius * 4, _glowPaint);
+        canvas.drawCircle(
+          Offset(p.x, p.y),
+          p.radius * _kGlowRadiusScale,
+          glowPaint,
+        );
       }
     }
   }
 
   @override
   bool shouldRepaint(_ConstellationPainter old) =>
-      generation != old.generation || color != old.color;
+      generation != old.generation ||
+      color != old.color ||
+      connectionDistance != old.connectionDistance ||
+      particles != old.particles ||
+      grid != old.grid;
 }
 
 class _Particle {
