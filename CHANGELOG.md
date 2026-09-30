@@ -9,6 +9,8 @@
   now point at the lines that do the work.
 - The example README now says the cell size demonstration is the script's
   third section, not its last.
+- The README's comparison with a hand-written `CustomPainter` now says when
+  the painter is the better choice, in a short table.
 
 ## 1.1.0
 

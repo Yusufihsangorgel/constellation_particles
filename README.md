@@ -19,6 +19,14 @@ whose `semanticsBuilder` returns `null` until you write one
 high contrast, pausing when the app goes to the background, and keeping the
 decoration out of the accessibility tree are all left to you.
 
+Which one to pick depends on what the background has to do:
+
+| If you need | Pick |
+| ----------- | ---- |
+| Only the drawing, with no reduced-motion, lifecycle or semantics requirement | A short hand-written `CustomPainter`. It adds no dependency and you own every line. |
+| A field that holds still under reduced motion with the constellation still painted, pauses when the app is hidden or paused, and stays out of the semantics tree | This package. The reduced-motion and semantics behaviour is covered by `test/reduce_motion_test.dart`. |
+| A drawing that does not resemble a constellation of linked points | A `CustomPainter` written for that drawing. This package only draws drifting points and the lines between near neighbours. |
+
 **Instead of the existing particle packages.** `animated_background`,
 `particle_field` and `particles_network` are genuinely animated packages, but a
 case-insensitive search of each one's `lib/` finds no `disableAnimations`, no
