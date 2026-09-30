@@ -24,10 +24,8 @@ decoration out of the accessibility tree are all left to you.
 case-insensitive search of each one's `lib/` finds no `disableAnimations`, no
 `highContrast`, no `AppLifecycleState` and no `Semantics`. This package reads
 `MediaQuery.maybeDisableAnimationsOf` and holds the field still with the
-constellation on screen (`lib/constellation_particles.dart:138`), and stops the
-clock when the app is hidden (`lib/constellation_particles.dart:164`). To be
-fair about scale, all three draw under 4,000 downloads a month, so this is a
-small corner of the ecosystem.
+constellation on screen (`lib/constellation_particles.dart:136`), and stops the
+clock when the app is hidden (`lib/constellation_particles.dart:160`).
 
 ## Reach for it when
 
@@ -117,11 +115,10 @@ AOT run that a Flutter release build actually uses.
 
 ## Alternatives
 
-`animated_background` (311 likes), `particle_field` (143) and
-`particles_network` (66) are all older and more widely used than this package.
-Reading their published archives on 2026-08-09, none of the three mentions
-`disableAnimations`, `highContrast` or `AppLifecycleState` anywhere, and none
-puts a node into the semantics tree. Closing that gap is why this package was
+`animated_background`, `particle_field` and `particles_network` are the three
+packages compared here. Reading their published archives on 2026-08-09, none
+of the three mentions `disableAnimations`, `highContrast` or
+`AppLifecycleState` anywhere, and none puts a node into the semantics tree. Closing that gap is why this package was
 written.
 
 If you have accessibility covered elsewhere, `particles_network` is the one
@@ -149,7 +146,8 @@ touches to push them around as well.
 
 - Pauses its ticker when the app is hidden or backgrounded.
 - Halves the particle count when the platform requests high contrast.
-- Caches its paints and the glow gradient, and repaints only after the
+- Caches its Paint objects and gradient colours, then creates a radial shader
+  for each glowing particle during paint. It repaints only after the
   simulation has actually advanced.
 - Excludes itself from the semantics tree, being decoration.
 - Renders inside a `RepaintBoundary`; your content stays out of its repaints.

@@ -172,7 +172,7 @@ platform request holds the field with the switch still reading off.
 
 ## A note on the cell size
 
-The script's last section demonstrates the one thing in the grid that must not
+The script's third section demonstrates the one thing in the grid that must not
 be tuned. Its cell size equals the connection distance, and that is what makes
 nine cells enough: two particles closer together than one cell size cannot be
 two cells apart. Halve the cells and the pass gets *faster* while silently

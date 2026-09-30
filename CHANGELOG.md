@@ -1,3 +1,15 @@
+## 1.1.1
+
+- The README no longer quotes monthly download and like counts for other
+  packages. Nothing in the repository backed them.
+- The README's list of what the widget handles now describes the paint cache
+  as it is: Paint objects and gradient colours are cached, and a radial shader
+  is still created for each glowing particle.
+- The README's source line references for reduced motion and app lifecycle
+  now point at the lines that do the work.
+- The example README now says the cell size demonstration is the script's
+  third section, not its last.
+
 ## 1.1.0
 
 - The README now answers, in its first screen, why to reach for this rather
